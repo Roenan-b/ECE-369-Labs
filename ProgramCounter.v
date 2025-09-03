@@ -35,7 +35,8 @@ module ProgramCounter(Address, PCResult, Reset, Clk);
     if (Reset == 1) begin
        PCResult <= 0;
     end
-	 else PCResult <= PCAddResult;
+	 else 
+		 PCResult <= PCAddResult;         // next PC value (e.g., PC+4)
  end
     /* Please fill in the implementation here... */
 
