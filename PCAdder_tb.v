@@ -24,9 +24,10 @@ module PCAdder_tb();
 	PCResult <= 0;
 	//PCAddResult <= 0;
 
-	#100
-	#100
-	#100
+	#100;
+		PCResult <= 4;
+	#100;
+	#100;
 /*		$display(PCResult,PCAddResult);
 	PCResult <= 5;
 
