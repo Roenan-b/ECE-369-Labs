@@ -21,7 +21,18 @@ module PCAdder_tb();
 	initial begin
 	
     /* Please fill in the implementation here... */
-	
+	PCResult <= 0;
+	//PCAddResult <= 0;
+
+	#100
+	#100
+	#100
+/*		$display(PCResult,PCAddResult);
+	PCResult <= 5;
+
+	$display(PCResult, PCAddResult);	
+		
+	*/
 	end
 
 endmodule
