@@ -28,13 +28,14 @@ module ProgramCounter(Address, PCResult, Reset, Clk);
 
 	input [31:0] Address;
 	input Reset, Clk;
-
+	input [31:0] PCAddResult;
 	output reg [31:0] PCResult;
 	
  always @ (posedge Clk) begin
     if (Reset == 1) begin
-    
+       PCResult <= 0;
     end
+	 else PCResult <= PCAddResult;
  end
     /* Please fill in the implementation here... */
 
