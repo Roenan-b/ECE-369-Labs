@@ -26,10 +26,10 @@
 
 module ProgramCounter(Address, PCResult, Reset, Clk);
 
-	input [31:0] Address;
-	input Reset, Clk;
+	input [31:0] Address;	//Given
+	input Reset, Clk;	//Given
 	input [31:0] PCAddResult;
-	output reg [31:0] PCResult;
+	output reg [31:0] PCResult;	//Given
 	
  always @ (posedge Clk) begin
     if (Reset == 1) begin
