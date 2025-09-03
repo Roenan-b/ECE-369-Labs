@@ -41,6 +41,22 @@
 
 module InstructionFetchUnit(Instruction, PCResult, Reset, Clk);
 
+    input Clk, Reset;
+    
+    output [31:0] Instruction;
+    output [31:0] PCResult;
     /* Please fill in the implementation here... */
+
+    //PCREsult = PCResult 
+    
+    PCAdder a1(PCResult, PCAddResult);
+    wire [31:0] PCAddResult;
+     ProgramCounter a2(PCAddResult, PCResult, Reset, Clk);
+    wire [31:0] PCResult;
+    InstructionMemory a3(PCResult, Instruction);
+            
+//    wire [31:0] Instruction;
+                      
 endmodule
+
 
