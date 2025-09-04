@@ -20,8 +20,11 @@ module InstructionMemory_tb();
 
 	initial begin
 	
-    /* Please fill in the implementation here... */
-	
+    Address <= 32'd0;
+    #10
+    Address <=32'd4;
+	#10
+	Address <=32'd8;
 	end
 
 endmodule
