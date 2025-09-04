@@ -39,19 +39,21 @@
 module InstructionMemory(Address, Instruction); 
 
     input [31:0] Address;        // Input Address 
-
-    output reg [31:0] Instruction;    // Instruction at memory location Address
-    
-    /* Please fill in the implementation here */
-//    reg i;
-
-
-    always @ (Address) begin
     integer i;
-    for( i =0; i < 31; i = i +1) begin
+    output reg [31:0] Instruction;    // Instruction at memory location Address
+    reg [31:0] memory [127:0];  //32 bits of memory locations, each memory location stores 128 words
+    
+//    reg i;
+   initial 
+    begin
+    for( i =0; i < 32; i = i +1) begin
         memory[i] = i * 3;
+        end
     end
-    Instruction = Address[i]
+
+   always @ (Address) begin
+    
+    Instruction = memory[Address[8:2]]; // we only need the lower 7 bits to index each memory location, last 7 bits of the 32 bits in each memory address
 
     end
 endmodule
