@@ -25,12 +25,15 @@ module ProgramCounter_tb();
 		Clk <= 1'b0;
 		forever #10 Clk <= ~Clk;
 	end
-
-	initial begin
 	
-    /* Please fill in the implementation here... */
+	initial begin
+	Address<= 32'd4;
+	@(posedge Clk)
+	Reset <= 1;
+	
 	
 	end
+
 
 endmodule
 
