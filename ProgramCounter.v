@@ -38,7 +38,5 @@ module ProgramCounter(Address, PCResult, Reset, Clk);
 	 else 
 		 PCResult <= Address;         // next PC value (e.g., PC+4) think this needs to be switched to Address, Address is holding the next value
  end
-    /* Please fill in the implementation here... */
-
 endmodule
 
