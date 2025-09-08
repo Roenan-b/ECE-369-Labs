@@ -2,7 +2,7 @@
 
 
 
-module top (Clk, Reset, NumberA, NumberB);
+module top (Clk, Reset, out7, en_out);
 input Clk;
 input Reset; //BTNU is Reset
 //output [0:0] LED; //LED[0] is done
