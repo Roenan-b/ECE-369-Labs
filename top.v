@@ -13,7 +13,9 @@ wire ClkOut;
 wire Instruction, PCResult;
   
 ClkDiv a1(Clk, 1'b0, ClkOut);
-InstructionFetchUnit a2(Instruction, PCResult, Reset, Clk);
+InstructionFetchUnit a2(Instruction, PCResult, Reset, ClkOut);
+assign NumberA = Instruction[15:0];
+Assign NumberB = PCResult[15:0];
 Two4DigitDisplay a4(Clk, NumberA, NumberB, out7, en_out);
 
 
