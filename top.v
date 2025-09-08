@@ -12,7 +12,7 @@ output NumberA, NumberB; //segment a, b, ... g
 wire ClkOut;
   wire Instruction, PCResult;
   ClkDiv a1(Clk, 1'b0, ClkOut);
-  InstructionFetchUnit a2(
+  InstructionFetchUnit a2(Instruction, PCResult, Reset, Clk);
   Two4DigitDisplay a4(Clk, CA,CB,CC,CD,CE,CF,CG,AN);
 
 
