@@ -14,7 +14,7 @@ wire Instruction, PCResult;
   
 ClkDiv a1(Clk, 1'b0, ClkOut);
 InstructionFetchUnit a2(Instruction, PCResult, Reset, Clk);
-  Two4DigitDisplay a4(Clk, );
+  Two4DigitDisplay a4(Clk, NumberA, NumberB, out7, en_out);
 
 
 endmodule
