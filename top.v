@@ -10,8 +10,10 @@ output out7, en_out; //segment a, b, ... g
 //output [7:0] AN; //enable each digit of the 8 digits
 //write your code to connect the modules as shown in Figure 1 (page 3)
 wire ClkOut;
-wire Instruction, PCResult;
-wire NumberA, NumberB;
+wire [31:0]Instruction; 
+wire[31:0]PCResult;
+wire [15:0]NumberA;
+wire [15:0]NumberB;
   
 ClkDiv a1(Clk, 1'b0, ClkOut);
 InstructionFetchUnit a2(Instruction, PCResult, Reset, ClkOut);
