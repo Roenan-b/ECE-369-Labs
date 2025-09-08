@@ -2,8 +2,8 @@
 
 
 
-module top (CLK100MHZ, BTNU, LED, first, CB, CC, CD, CE, CF, CG, AN);
-input CLK100MHZ;
+module top (Clk, BTNU, LED, first, CB, CC, CD, CE, CF, CG, AN);
+input Clk;
 input BTNU; //BTNU is Reset
 output [0:0] LED; //LED[0] is done
 output CA, CB, CC, CD, CE, CF, CG; //segment a, b, ... g
