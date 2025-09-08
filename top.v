@@ -1,3 +1,7 @@
+`timescale 1ns / 1ps
+
+
+
 module top (CLK100MHZ, BTNU, LED, first, CB, CC, CD, CE, CF, CG, AN);
 input CLK100MHZ;
 input BTNU; //BTNU is Reset
