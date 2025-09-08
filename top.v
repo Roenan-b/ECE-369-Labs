@@ -13,7 +13,7 @@ wire ClkOut;
   ClkDiv a1(Clk, 1'b0, ClkOut);
 wire [7:0] R_Data, max;
 wire [7:0] D;
-Two4DigitDisplay a4(CLK100MHZ, D[6:0], CA,CB,CC,CD,CE,CF,CG,AN);
+  Two4DigitDisplay a4(Clk, D[6:0], CA,CB,CC,CD,CE,CF,CG,AN);
 
 
 endmodule
