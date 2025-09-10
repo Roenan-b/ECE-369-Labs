@@ -41,21 +41,24 @@
 
 module InstructionFetchUnit(Instruction, PCResult, Reset, Clk);
 
-    input Clk, Reset;
-    wire [31:0] PCAddResult;
-//    wire [31:0] PCResult;
-    output [31:0] Instruction;
-    output [31:0] PCResult;
+    input Clk, Reset;                    // Clock and Reset control signals
+    wire [31:0] PCAddResult;             // Wire holding the next PC value (PC + 4)
+    // wire [31:0] PCResult;             // Already declared as output below
+    output [31:0] Instruction;           // Current instruction fetched from memory
+    output [31:0] PCResult;              // Current value of the Program Counter (PC)
 
-    //PCREsult = PCResult 
-    
+    // PCAdder module: computes next PC value (PC + 4)
     PCAdder a1(PCResult, PCAddResult);
 
+    // ProgramCounter module: holds current PC, updates to next PC on clock edge
+    // - Takes PCAddResult as input (next PC)
+    // - Outputs PCResult as the current PC value
+    // - Resets PCResult to 0 when Reset is active
     ProgramCounter a2(PCAddResult, PCResult, Reset, Clk);
     
+    // InstructionMemory module: fetches instruction stored at the current PC address
     InstructionMemory a3(PCResult, Instruction);
             
-                      
 endmodule
 
 
