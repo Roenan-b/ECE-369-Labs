@@ -19,19 +19,18 @@
 // 4 (i.e., PCAddResult = PCResult + 4).
 ////////////////////////////////////////////////////////////////////////////////
 
-module ProgramCounter(Address, PCResult, Reset, Clk);
+module PCAdder(PCResult, PCAddResult);
 
-	input [31:0] Address;	    // 32-bit input carrying the "next PC" value (e.g., PC + 4)
-	input Reset, Clk;		    // Reset = async control to clear PC to 0; Clk = clock signal
-	//input [31:0] PCAddResult;	// Unused input (likely for PC + 4 in other designs)
-	output reg [31:0] PCResult;	// 32-bit register output that stores the current PC value
-	
- // Always block triggered on the rising edge of the clock
- always @ (posedge Clk) begin
-    if (Reset == 1) begin
-       PCResult <= 0;           // If Reset is asserted, set PC to 0 (start of instruction memory)
+    input [31:0] PCResult;          // Current PC value coming from ProgramCounter
+    output reg [31:0] PCAddResult;  // Next PC value (PC + 4), fed back into ProgramCounter
+
+    // Always block triggers whenever PCResult changes
+    always @ (PCResult) begin
+        PCAddResult <= PCResult + 4; // Increment the PC by 4 (word-aligned instruction step)
     end
-	 else 
-		 PCResult <= Address;   // Otherwise, update PCResult with the incoming Address (next PC)
- end
+  
+    /* The logic is complete here:
+       - This is essentially a hard-wired adder.
+       - Every instruction in MIPS is 4 bytes, so we increment PC by 4 each time.
+       - PCAddResult is then fed back to ProgramCounter in the Instruction Fetch Unit. */
 endmodule
