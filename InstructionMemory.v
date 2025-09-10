@@ -38,23 +38,26 @@
 
 module InstructionMemory(Address, Instruction); 
 
-    input [31:0] Address;        // Input Address 
-    integer i;
-    output reg [31:0] Instruction;    // Instruction at memory location Address
-    reg [31:0] memory [127:0];  //32 bits of memory locations, each memory location stores 128 words
+    input [31:0] Address;                  // 32-bit input address coming from the Program Counter (PC)
+    integer i;                             // Loop iterator used for initializing memory
+    output reg [31:0] Instruction;         // 32-bit instruction output from the memory
+    reg [31:0] memory [127:0];             // Instruction memory: 128 words, each 32 bits wide
     
-//    reg i;
-   initial 
-    begin
-    for( i =0; i < 32; i = i +1) begin
-        memory[i] = i * 3;
+    // Initial block runs once at simulation start
+    initial begin
+        // Fill memory with simple test values (each location = index * 3)
+        // This mimics "hard-coded" machine instructions for testing
+        for (i = 0; i < 32; i = i + 1) begin
+            memory[i] = i * 3;
         end
     end
 
-   always @ (Address) begin
-    
-    Instruction = memory[Address[8:2]]; // we only need the lower 7 bits to index each memory location, last 7 bits of the 32 bits in each memory address
-
+    // Always block triggers whenever Address changes
+    always @ (Address) begin
+        // Use bits [8:2] of Address as the word index:
+        // - Instructions are word-aligned (32-bit = 4 bytes)
+        // - Ignore bits [1:0] since they represent byte offsets
+        // - Bits [8:2] provide a 7-bit index (0–127) into memory
+        Instruction = memory[Address[8:2]];
     end
 endmodule
-
