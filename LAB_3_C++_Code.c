@@ -17,6 +17,8 @@ int sad_Min = 1000000;
 int window_track_x;
 int window_track_y;
 
+int sad_window_track_row;   //STORING MINUM SAD ROW
+int sad_window_track_column; //STORING MINUM SAD ROW
 
 // movement 1 (x cord + 1)
 
