@@ -1,4 +1,7 @@
 
+
+
+//FOLLOWING 4 VARIABLES NEED DEDICATED REGISTERS
 int frame_x;
 int fame_y;
 int window_x;
@@ -9,6 +12,8 @@ int sadSize_x = frame_x - window_x;
 int sadSize_y = frame_y - window_y;
 int sad_Min = 1000000;
 
+
+//NEED DEDICATED REGISTERS
 int window_track_x;
 int window_track_y;
 
@@ -53,6 +58,7 @@ while ((window_track_x > 1) && (window_track_y < sadSize_y)){
 
 // sad capture
 
+//USE TEMP REGISTERS FOR THE COMPARISONS (i and j INSIDE THE FUNCTION)
 function sad_capture (int window_x_size, int window_y_size, int frame_i, int frame,j){
   int SAD =0;
   for (int i=1; i < window_x_size; i++){
