@@ -5,25 +5,51 @@ int window_x;
 int window_y;
 
 
-int sad_x = frame_x - window_x;
-int sad_y = frame_y - window_y;
+int sadSize_x = frame_x - window_x;
+int sadSize_y = frame_y - window_y;
 int sad_Min = 1000000;
 
-
+int window_track_x;
+int window_track_y;
 
 
 // movement 1 (x cord + 1)
+
+if ( window_track_y = sadSize_y && (window_track_x < sadSize_x) {
+ window_track_x = window_track_x + 1;
+}
+//RUN FUCNTION sad_capture 
+//MOVE TO MOVEMENT 4 AFTER
+
 
 
 
 
 //movement 2 (y cord - 1)
+if ( window_track_x = sadSize_y||window_track_x = 1  && (window_track_y < sadSize_y) {
+ window_track_y = window_track_y + 1;
+}
+//RUN FUCNTION sad_capture
+//MOVE TO MOVEMENT 3 AFTER
+
+
 
 
 //movement 3 (diagonal up-right)
+while ((window_track_x < sadSize_x) && (window_track_y > 1)) {
+  window_track_x++;
+  window_track_y++;
+  RUN FUNCTION THEN JUMP TO NEXT MOVEMENT
+}
+
+
 
 //movement 4 (diagonal left-down)
-
+while ((window_track_x > 1) && (window_track_y < sadSize_y)){
+  window_track_x--;
+  window_track_y--;
+   RUN FUNCTION THEN JUMP TO NEXT MOVEMENT
+}
 
 // sad capture
 
