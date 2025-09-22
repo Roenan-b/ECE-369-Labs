@@ -62,10 +62,10 @@ while ((window_track_x > 1) && (window_track_y < sadSize_y)){
 // sad capture
 
 //USE TEMP REGISTERS FOR THE COMPARISONS (i and j INSIDE THE FUNCTION)
-function sad_capture (int window_x_size, int window_y_size, int frame_i, int frame,j){
+function sad_capture (int window_x_size, int window_y_size, int window_track_x, int window_track_y){
   int SAD =0;
-  for (int i=1; i < window_x_size; i++){
-  for (int j =1; i < window_y_size; j++){
+  for (int i=window_track_x; i < window_x_size; i++){
+  for (int j =int window_track_y; i < window_y_size; j++){
   SAD = SAD + abs(array[i][j] - window[i][j]);  //IN MIPS IT WOULD BE array[i*j] or window[i*j]
   }
   }
