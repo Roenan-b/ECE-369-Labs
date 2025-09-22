@@ -800,12 +800,28 @@ vbsme:
 
     li    $s5, 0  # $s5 will be sad_window_track_row (SAD MIN row)
     li    $s6, 0  # $s6 will be sad_window_track_column (SAD MIN column)
-
+    
+    
 
 
 #Start of movements
 #Movement 1 (x cord +1)
-    bne(
+# NEED TO ADD JUMP LOCATION HERE (see line below)
+#MOVEMENT 1:
+    bne $t0, $s1, Movement  
+    # need to flesh out branches in if condition (might need 4?)
          
+    addi $t0, $t0, 1 #window_track_x = window_track_x + 1  (MAKE SURE t registers will save)
+                     # Run abs function
+#Movement 2 (y cord + 1)
+# NEED TO ADD JUMP LOCATION HERE (see line below)
+#MOVEMENT 2:     
+    subbi $t1, $t1, 1
+
+
+
+
+
+
     # insert your code here
    
