@@ -791,15 +791,20 @@ vbsme:
     lw $s3, 12($a0) #$s3 = l (window y size)
 
     sub $s0, $s0, $s2  #$s0 = sadSize_x
-    sub $s1, $s1, $s3  #$s0 = sadSize_y
+    sub $s1, $s1, $s3  #$s1 = sadSize_y
     addi $s4, $s4, 1000000 # make sure register has enough bits for big value, sets sad_min = 1,000,000
 
-    li    $t0, 0    # $t0 will be window_track_x
-    li    $t1, 0    # $t1 will be window_track_y
+    li    $t0, 1    # $t0 will be window_track_x ( initilized and stays at 1 until movement starts)
+    li    $t1, 1    # $t1 will be window_track_y 
+  #WRONG  add    $t1, $s1, $zero    # $t1 will be window_track_y (set to max y value since it starts at "top"
 
 
-    li    $s5, 0  # $s5 will be sad_window_track_row (SAD MIN row)
-    li    $s6, 0  # $s6 will be sad_window_track_column (SAD MIN column)
+    li    $s5, 1  # $s5 will be sad_window_track_row (SAD MIN row)
+    li    $s6, 1  # $s6 will be sad_window_track_column (SAD MIN column)
+
+    #RUN FUNCTION HERE 
+    # ( JUST LIKE WE HAVE A FIRST RUN HERE, WE WILL NEED TO PUT STOP CONDITIONS SOMEWHERE AT A CERTAIN POINT)
+    j MOVMENT_1
     
     
 
@@ -807,31 +812,48 @@ vbsme:
 #Start of movements
 #Movement 1 (x cord +1)
 # NEED TO ADD JUMP LOCATION HERE (see line below)
-#MOVEMENT 1:
+#MOVEMENT_1:
+
     bne $t0, $s1, Movement  
     # need to flesh out branches in if condition (might need 4?)
          
     addi $t0, $t0, 1 #window_track_x = window_track_x + 1  (MAKE SURE t registers will save)
                      # Run abs function
+
+
+                     
 #Movement 2 (y cord + 1)
 # NEED TO ADD JUMP LOCATION HERE (see line below)
-#MOVEMENT 2:     
-    subbi $t1, $t1, 1
+#MOVEMENT_2:     
+    addi $t1, $t1, 1   # add since it increases the depth level of y (counter intuitive)
 
  # need to flesh out branches in if condition (might need 4?)
 
+
+
+
  #Movement 3 (diagonal up-right)
- # NEED TO ADD JUMP LOCATION HERE (see line below)
- #MOVEMENT 3: 
- addi $t0, $t0, 1   #window_track_x++
- addi $t1, $t1, 1   #window_track_y++
+ # NEED TO ADD JUMP LOCATION HERE (see line below) DONE
+ 
+ MOVEMENT_3: 
+ li $t3, 1
+
+# CHECK THIS TO SEE IF FLIPPED
+ bge $t3,$t1, MOVEMENT_1    # if window_track_y is back at the y=1 level jump to movement 1 (move right 1)
+                            # aka if the window_track_y hits the top bound of 
+ bge $t0,$s0, MOVEMENT_2    # if window_track_x hits the rightmost x bound (aka sad_size_x), go to movement 2 (move down 1)
+ addi $t0, $t0, 1   #window_track_x++   (move x to the right Column 2 -> column 3)
+ subbi $t1, $t1, 1   #window_track_y--  (this moves it up a row EX: row 3 to row 2)
+
+
+
 
  #Movement 4 (diagonal left-down)
  # NEED TO ADD JUMP LOCATION HERE (see line below)
- #MOVEMENT 4: 
+ #MOVEMENT_4: 
 
  subi $t0, $t0, 1   #window_track_x--
- subi $t1, $t1, 1   #window_track_y--
+ addi $t1, $t1, 1   #window_track_y--   (this moves it down a row EX: row 2 to row 3)
 
     # insert your code here
    
