@@ -785,10 +785,10 @@ vbsme:
     # CHECK EVERYTHING
     # Possible Issues: do we need to initialize s0 and s1 with 0?, is the following memory/array access correct?,
     # can we use temp regs more (might run out of $s regs)
-    add $s0, $s0, ($a0)  # $s0 = i (frame x size)
-    add $s1, $s1, 4($a0) # $s1 = j (fram y size)
-    add $s2, $s2, 8($a0) # $s2 = k (window x size)
-    add $s3, $s3, 12($a0) #$s3 = l (window y size)
+    lw $s0, 0($a0)  # $s0 = i (frame x size)
+    lw $s1, 4($a0) # $s1 = j (fram y size)
+    lw $s2, 8($a0) # $s2 = k (window x size)
+    lw $s3, 12($a0) #$s3 = l (window y size)
 
     sub $s0, $s0, $s2  #$s0 = sadSize_x
     sub $s1, $s1, $s3  #$s0 = sadSize_y
