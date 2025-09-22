@@ -780,10 +780,10 @@ print_result:
 vbsme:  
     li      $v0, 0              # reset $v0 and $V1
     li      $v1, 0
-    # MIGHT NEED TO RESET ALL REGISTERS
+    # MIGHT NEED TO RESET ALL REGISTERS!!
 
-    # CHECK EVERYTHING
-    # Possible Issues: do we need to initialize s0 and s1 with 0?, is the following memory/array access correct?,
+    # CHECK EVERYTHING!!
+    # Possible Issues: do we need to initialize regs with 0?, is the following memory/array access correct? (CORRECTED),
     # can we use temp regs more (might run out of $s regs)
     lw $s0, 0($a0)  # $s0 = i (frame x size)
     lw $s1, 4($a0) # $s1 = j (fram y size)
@@ -818,10 +818,20 @@ vbsme:
 #MOVEMENT 2:     
     subbi $t1, $t1, 1
 
+ # need to flesh out branches in if condition (might need 4?)
 
+ #Movement 3 (diagonal up-right)
+ # NEED TO ADD JUMP LOCATION HERE (see line below)
+ #MOVEMENT 3: 
+ addi $t0, $t0, 1   #window_track_x++
+ addi $t1, $t1, 1   #window_track_y++
 
+ #Movement 4 (diagonal left-down)
+ # NEED TO ADD JUMP LOCATION HERE (see line below)
+ #MOVEMENT 4: 
 
-
+ subi $t0, $t0, 1   #window_track_x--
+ subi $t1, $t1, 1   #window_track_y--
 
     # insert your code here
    
