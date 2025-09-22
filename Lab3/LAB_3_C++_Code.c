@@ -48,7 +48,7 @@ while ((window_track_x < sadSize_x) && (window_track_y > 1)) {
   window_track_y++;
   RUN FUNCTION THEN JUMP TO NEXT MOVEMENT
 }
-
+//ADD IF STATEMENTS HERE!!!!!!!
 
 
 //movement 4 (diagonal left-down)
@@ -57,6 +57,7 @@ while ((window_track_x > 1) && (window_track_y < sadSize_y)){
   window_track_y--;
    RUN FUNCTION THEN JUMP TO NEXT MOVEMENT
 }
+//ADD IF STATEMENTS HERE!!!!!
 
 // sad capture
 
