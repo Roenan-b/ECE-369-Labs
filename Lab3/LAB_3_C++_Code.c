@@ -71,8 +71,11 @@ function sad_capture (int window_x_size, int window_y_size, int window_track_x, 
   }
   if (SAD < sad_min){
   sad_min = SAD;   //CHECK THIS, either implement the comparison in the function or outside of it.
+  sad_min_row = i;   // this will be $v0
+  sad_min_column = j; // this will be $v1
   }
-  return SAD;
+  return sad_min_row;
+  return sad_min_column;
 }
 
 
