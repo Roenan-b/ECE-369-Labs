@@ -780,6 +780,32 @@ print_result:
 vbsme:  
     li      $v0, 0              # reset $v0 and $V1
     li      $v1, 0
+    # MIGHT NEED TO RESET ALL REGISTERS
 
+    # CHECK EVERYTHING
+    # Possible Issues: do we need to initialize s0 and s1 with 0?, is the following memory/array access correct?,
+    # can we use temp regs more (might run out of $s regs)
+    add $s0, $s0, ($a0)  # $s0 = i (frame x size)
+    add $s1, $s1, 4($a0) # $s1 = j (fram y size)
+    add $s2, $s2, 8($a0) # $s2 = k (window x size)
+    add $s3, $s3, 12($a0) #$s3 = l (window y size)
+
+    sub $s0, $s0, $s2  #$s0 = sadSize_x
+    sub $s1, $s1, $s3  #$s0 = sadSize_y
+    addi $s4, $s4, 1000000 # make sure register has enough bits for big value, sets sad_min = 1,000,000
+
+    li    $t0, 0    # $t0 will be window_track_x
+    li    $t1, 0    # $t1 will be window_track_y
+
+
+    li    $s5, 0  # $s5 will be sad_window_track_row (SAD MIN row)
+    li    $s6, 0  # $s6 will be sad_window_track_column (SAD MIN column)
+
+
+
+#Start of movements
+#Movement 1 (x cord +1)
+    bne(
+         
     # insert your code here
    
