@@ -34,7 +34,7 @@ if ( window_track_y = sadSize_y && (window_track_x < sadSize_x) {
 
 //movement 2 (y cord - 1)
 if ( window_track_x = sadSize_y||window_track_x = 1  && (window_track_y < sadSize_y) {
- window_track_y = window_track_y + 1;
+ window_track_y = window_track_y - 1;
 }
 //RUN FUCNTION sad_capture
 //MOVE TO MOVEMENT 3 AFTER
