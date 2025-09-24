@@ -790,9 +790,10 @@ vbsme:
     lw $s2, 8($a0) # $s2 = k (window x size)
     lw $s3, 12($a0) #$s3 = l (window y size)
 
-    sub $s0, $s0, $s2  #$s0 = sadSize_x
+    sub $s0, $s0, $s2  #$s0 = sadSize_x (frame x size -window x size)
     sub $s1, $s1, $s3  #$s1 = sadSize_y
-    addi $s4, $s4, 1000000 # make sure register has enough bits for big value, sets sad_min = 1,000,000
+    
+    li $s4, 1000000 # make sure register has enough bits for big value, sets sad_min = 1,000,000
 
     li    $t0, 1    # $t0 will be window_track_x ( initilized and stays at 1 until movement starts)
     li    $t1, 1    # $t1 will be window_track_y 
@@ -803,6 +804,7 @@ vbsme:
     li    $s6, 1  # $s6 will be sad_window_track_column (SAD MIN column)
     
     #RUN FUNCTION HERE 
+    jal ABS_FUNC
     # ( JUST LIKE WE HAVE A FIRST RUN HERE, WE WILL NEED TO PUT STOP CONDITIONS SOMEWHERE AT A CERTAIN POINT)
     j MOVMENT_1
     
@@ -815,7 +817,9 @@ vbsme:
 MOVEMENT_1:
          
 addi $t0, $t0, 1 #window_track_x = window_track_x + 1  (MAKE SURE t registers will save)
-# RUN ABS FUNCTION HERE:!!!!
+
+jal ABS_FUNC  # Runs ABS FUNCTION
+
 beq $t1,$t3, MOVEMENT_4  # If y cord is 1 (at top) then go to MOVMENT_4 (down and left)
 beq $t1,$s1, MOVEMENT_3  #If y cord is sad_size_y(at bottom) then go to MOVEMENT_3 (up and right)
 
@@ -825,6 +829,7 @@ beq $t1,$s1, MOVEMENT_3  #If y cord is sad_size_y(at bottom) then go to MOVEMENT
 MOVEMENT_2:     
     addi $t1, $t1, 1   # add since it increases the depth level of y (counter intuitive)
 # RUN ABS FUNCTION HERE:!!!!!
+jal ABS_FUNC  # Runs ABS FUNCTION
 
 beq $t0,$t3, MOVEMENT_3  # if on left side of grid (x=1), start moving up right (Movement 3)
 beq $t0,$s0, MOVEMENT_4  # if on right side of grid (x = sad_size_z), start moving down left (Movment 4)
@@ -846,7 +851,10 @@ beq $t0,$s0, MOVEMENT_4  # if on right side of grid (x = sad_size_z), start movi
                             # aka if the window_track_y hits the top bound of 
   
  addi $t0, $t0, 1   #window_track_x++   (move x to the right Column 2 -> column 3)
- subbi $t1, $t1, 1   #window_track_y--  (this moves it up a row EX: row 3 to row 2)
+ addi $t1, $t1, -1   #window_track_y--  (this moves it up a row EX: row 3 to row 2)
+ 
+ jal ABS_FUNC  # Runs ABS FUNCTION
+ 
  j MOVEMENT_3
 
 
@@ -857,8 +865,25 @@ beq $t0,$s0, MOVEMENT_4  # if on right side of grid (x = sad_size_z), start movi
  bge $t1 , $s1, MOVEMENT_1  # if y-tracker is equal to sad_size_y, then jump to movement 1 (move right 1)
  bge $t0,$t3, MOVEMENT_2  # if window_track_x is back at the 1 level jump to movement 2 (move down 1)
  
- subi $t0, $t0, 1   #window_track_x--
+ addi $t0, $t0, -1   #window_track_x--
  addi $t1, $t1, 1   #window_track_y++   (this moves it down a row EX: row 2 to row 3)
+ 
+ jal ABS_FUNC # Runs ABS FUNCTION
+ 
  j MOVEMENT_4
     # insert your code here
+
+
+ABS_FUNC: 
+li $t4, 0    #This is our function temp var SAD (See c code)
+add $t5, $zero, $t0   #$t5 will be our outer loop var (I), initilized to window_track_x
+add $t6, $zero, $t1 #$t6 will be our inner loop var (J), initilized to window_track_y
+beq $t5, $s2, JUMP TO if(SAD < sad_min) #FIXX!!!  (This line says if for condition ends 
+                                               #  (i < window_x_size) then it compares SAD to SAD_min)
+beq $t6, $s3, JUMP TO above statement #FIXXX!!
+
+
+
+
+
    
