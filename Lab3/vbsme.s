@@ -882,8 +882,16 @@ beq $t5, $s2, JUMP TO if(SAD < sad_min) #FIXX!!!  (This line says if for conditi
                                                #  (i < window_x_size) then it compares SAD to SAD_min)
 beq $t6, $s3, JUMP TO above statement #FIXXX!!
 
+#SAD = SAD + abs(array[i][j] - window[i][j]);
+#To implement this, we need to access the a$? data using an offset based off i*j
+#We then need to run our subtraction and addition instructions to get SAD
+#BELOW WILL BE THE LAST OF THE C code that needs to be written
 
-
+#if (SAD < sad_min){
+#  sad_min = SAD;   //CHECK THIS, either implement the comparison in the function or outside of it.
+#  sad_min_row = i;   // this will be $v0
+#  sad_min_column = j; // this will be $v1
+#  }
 
 
    
