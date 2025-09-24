@@ -838,10 +838,13 @@ vbsme:
  MOVEMENT_3: 
  li $t3, 1
 
+
 # CHECK THIS TO SEE IF FLIPPED
- bge $t3,$t1, MOVEMENT_1    # if window_track_y is back at the y=1 level jump to movement 1 (move right 1)
+#VERY IMPRORTANT THAT FOLLOWING bge's ARE IN THIS SPECIFIC ORDER
+  bge $t0,$s0, MOVEMENT_2  # if window_track_x hits the rightmost x bound (aka sad_size_x), go to movement 2 (move down 1)
+  bge $t3,$t1, MOVEMENT_1    # if window_track_y is back at the y=1 level jump to movement 1 (move right 1)
                             # aka if the window_track_y hits the top bound of 
- bge $t0,$s0, MOVEMENT_2    # if window_track_x hits the rightmost x bound (aka sad_size_x), go to movement 2 (move down 1)
+  
  addi $t0, $t0, 1   #window_track_x++   (move x to the right Column 2 -> column 3)
  subbi $t1, $t1, 1   #window_track_y--  (this moves it up a row EX: row 3 to row 2)
 
@@ -851,7 +854,9 @@ vbsme:
  #Movement 4 (diagonal left-down)
  # NEED TO ADD JUMP LOCATION HERE (see line below)
  #MOVEMENT_4: 
-
+ bge $t1 , $s1, MOVEMENT_1  # if y-tracker is equal to sad_size_y, then jump to movement 1 (move right 1)
+ bge $t0,$t3, MOVEMENT_2  # if window_track_x is back at the 1 level jump to movement 2 (move down 1)
+ 
  subi $t0, $t0, 1   #window_track_x--
  addi $t1, $t1, 1   #window_track_y--   (this moves it down a row EX: row 2 to row 3)
 
