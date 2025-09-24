@@ -847,7 +847,7 @@ MOVEMENT_2:
   
  addi $t0, $t0, 1   #window_track_x++   (move x to the right Column 2 -> column 3)
  subbi $t1, $t1, 1   #window_track_y--  (this moves it up a row EX: row 3 to row 2)
-
+ j MOVEMENT_3
 
 
 
@@ -859,6 +859,6 @@ MOVEMENT_2:
  
  subi $t0, $t0, 1   #window_track_x--
  addi $t1, $t1, 1   #window_track_y--   (this moves it down a row EX: row 2 to row 3)
-
+ j MOVEMENT_4
     # insert your code here
    
