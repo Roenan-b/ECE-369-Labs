@@ -812,7 +812,7 @@ vbsme:
 #Start of movements
 #Movement 1 (x cord +1)
 # NEED TO ADD JUMP LOCATION HERE (see line below)
-#MOVEMENT_1:
+MOVEMENT_1:
 
     bne $t0, $s1, Movement  
     # need to flesh out branches in if condition (might need 4?)
@@ -824,7 +824,7 @@ vbsme:
                      
 #Movement 2 (y cord + 1)
 # NEED TO ADD JUMP LOCATION HERE (see line below)
-#MOVEMENT_2:     
+MOVEMENT_2:     
     addi $t1, $t1, 1   # add since it increases the depth level of y (counter intuitive)
 
  # need to flesh out branches in if condition (might need 4?)
@@ -853,7 +853,7 @@ vbsme:
 
  #Movement 4 (diagonal left-down)
  # NEED TO ADD JUMP LOCATION HERE (see line below)
- #MOVEMENT_4: 
+ MOVEMENT_4: 
  bge $t1 , $s1, MOVEMENT_1  # if y-tracker is equal to sad_size_y, then jump to movement 1 (move right 1)
  bge $t0,$t3, MOVEMENT_2  # if window_track_x is back at the 1 level jump to movement 2 (move down 1)
  
