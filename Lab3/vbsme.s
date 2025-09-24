@@ -797,11 +797,11 @@ vbsme:
     li    $t0, 1    # $t0 will be window_track_x ( initilized and stays at 1 until movement starts)
     li    $t1, 1    # $t1 will be window_track_y 
   #WRONG  add    $t1, $s1, $zero    # $t1 will be window_track_y (set to max y value since it starts at "top"
-
+     li $t3, 1   #used to store value 1 for comparison
 
     li    $s5, 1  # $s5 will be sad_window_track_row (SAD MIN row)
     li    $s6, 1  # $s6 will be sad_window_track_column (SAD MIN column)
-
+    
     #RUN FUNCTION HERE 
     # ( JUST LIKE WE HAVE A FIRST RUN HERE, WE WILL NEED TO PUT STOP CONDITIONS SOMEWHERE AT A CERTAIN POINT)
     j MOVMENT_1
@@ -810,23 +810,24 @@ vbsme:
 
 
 #Start of movements
-#Movement 1 (x cord +1)
+#Movement 1 (x cord +1) (1 right)
 # NEED TO ADD JUMP LOCATION HERE (see line below)
 MOVEMENT_1:
-
-    bne $t0, $s1, Movement  
-    # need to flesh out branches in if condition (might need 4?)
          
-    addi $t0, $t0, 1 #window_track_x = window_track_x + 1  (MAKE SURE t registers will save)
-                     # Run abs function
-
+addi $t0, $t0, 1 #window_track_x = window_track_x + 1  (MAKE SURE t registers will save)
+# RUN ABS FUNCTION HERE:!!!!
+beq $t1,$t3, MOVEMENT_4  # If y cord is 1 (at top) then go to MOVMENT_4 (down and left)
+beq $t1,$s1, MOVEMENT_3  #If y cord is sad_size_y(at bottom) then go to MOVEMENT_3 (up and right)
 
                      
-#Movement 2 (y cord + 1)
+#Movement 2 (y cord + 1) (1 down)
 # NEED TO ADD JUMP LOCATION HERE (see line below)
 MOVEMENT_2:     
     addi $t1, $t1, 1   # add since it increases the depth level of y (counter intuitive)
+# RUN ABS FUNCTION HERE:!!!!!
 
+beq $t0,$t3, MOVEMENT_3  # if on left side of grid (x=1), start moving up right (Movement 3)
+beq $t0,$s0, MOVEMENT_4  # if on right side of grid (x = sad_size_z), start moving down left (Movment 4)
  # need to flesh out branches in if condition (might need 4?)
 
 
@@ -836,7 +837,6 @@ MOVEMENT_2:
  # NEED TO ADD JUMP LOCATION HERE (see line below) DONE
  
  MOVEMENT_3: 
- li $t3, 1
 
 
 # CHECK THIS TO SEE IF FLIPPED
@@ -858,7 +858,7 @@ MOVEMENT_2:
  bge $t0,$t3, MOVEMENT_2  # if window_track_x is back at the 1 level jump to movement 2 (move down 1)
  
  subi $t0, $t0, 1   #window_track_x--
- addi $t1, $t1, 1   #window_track_y--   (this moves it down a row EX: row 2 to row 3)
+ addi $t1, $t1, 1   #window_track_y++   (this moves it down a row EX: row 2 to row 3)
  j MOVEMENT_4
     # insert your code here
    
