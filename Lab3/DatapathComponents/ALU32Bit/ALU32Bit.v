@@ -43,17 +43,17 @@ module ALU32Bit(ALUControl, A, B, ALUResult, Zero);
 
 	always @* begin
 		case (ALUControl)
-			4'd0 <= A & B;
-			4'd1 <= A | B;
-			4'd2 <= A + B;
-			4'd5 <= A - B;
-			4'd7 <= A =<B;
-			4'd?? <= ~(A | B);
-			4'd?? <= A ^ B;
+			4'd0 <= A & B;  //AND
+			4'd1 <= A | B;	//OR
+			4'd2 <= A + B;  //ADD, ADDI, SW, LW
+			4'd5 <= A - B;	// SUB
+			4'd7 <= A =<B;  //SLT
+			4'd?? <= ~(A | B); //NOR
+			4'd?? <= A ^ B;  //XOR
 			
 
 		endcase
-		if (ALUControl = 0) begin
+		if (ALUControl = 0) begin   //Sets $zero reg signal to 1 if ALUControl is 0
 		Zero <= 1;
 		end 
 	end
