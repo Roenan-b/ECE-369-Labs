@@ -6,7 +6,10 @@
 // 
 //
 //
-// Student(s) Name and Last Name: FILL IN YOUR INFO HERE!
+// 
+// Team Members: Roenan Bingle, Evan Harris, Noah Monroe
+// % Effort    :   33%         |     33%    |     33% 
+//
 //
 //
 // Module - register_file.v
