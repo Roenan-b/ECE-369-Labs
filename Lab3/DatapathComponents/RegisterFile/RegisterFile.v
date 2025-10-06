@@ -69,14 +69,15 @@ module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegW
 
 	
   always @(negedge Clk) begin
-  
+	  ReadData1 <= regs[ReadRegister1];
+	  ReadData2 <= regs[ReadRegister2];
 
   end 
 	
   always @(posedge Clk) begin
     if (RegWrite) begin 
-		regs[WriteData] <= WriteRegister;
-		
+		if (WriteRegister != 5'd0)
+			regs[WriteRegister] <= WriteData;
     end
 
   end 
