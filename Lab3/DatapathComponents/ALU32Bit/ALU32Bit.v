@@ -6,6 +6,10 @@
 // Module - ALU32Bit.v
 // Description - 32-Bit wide arithmetic logic unit (ALU).
 //
+//
+// Team Members: Roenan Bingle, Evan Harris, Noah Monroe
+// % Effort    :   33%         |     33%    |     33% 
+//
 // INPUTS:-
 // ALUControl: N-Bit input control bits to select an ALU operation.
 // A: 32-Bit input port A.
