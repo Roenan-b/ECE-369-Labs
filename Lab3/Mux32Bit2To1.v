@@ -20,9 +20,10 @@ module Mux32Bit2To1(out, inA, inB, sel);
     always @(*)
     begin
     if (sel == 1)
-	out <= inB
+	out <= inB;
     else
-	out <= inA
+	out <= inA;
     end
 
 endmodule
+
