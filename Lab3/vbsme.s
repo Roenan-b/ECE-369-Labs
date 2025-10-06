@@ -1,6 +1,6 @@
 # Fall 2025
-# Team Members:    
-# % Effort    :   
+# Team Members: Roenan Bingle, Evan Harris, Noah Monroe
+# % Effort    :   33%         |     33%    |     33%
 #
 # ECE369A,  
 # 
@@ -664,7 +664,8 @@ main:
    
     lw      $ra, 0($sp)         # Restore return address
     addi    $sp, $sp, 4         # Restore stack pointer
-    jr      $ra                 # Return
+    #jr      $ra                 # Return
+    loop: j loop
 
 ################### Print Result ####################################
 print_result:
@@ -780,118 +781,200 @@ print_result:
 vbsme:  
     li      $v0, 0              # reset $v0 and $V1
     li      $v1, 0
-    # MIGHT NEED TO RESET ALL REGISTERS!!
 
-    # CHECK EVERYTHING!!
-    # Possible Issues: do we need to initialize regs with 0?, is the following memory/array access correct? (CORRECTED),
-    # can we use temp regs more (might run out of $s regs)
-    lw $s0, 0($a0)  # $s0 = i (frame x size)
-    lw $s1, 4($a0) # $s1 = j (fram y size)
-    lw $s2, 8($a0) # $s2 = k (window x size)
-    lw $s3, 12($a0) #$s3 = l (window y size)
 
-    sub $s0, $s0, $s2  #$s0 = sadSize_x (frame x size -window x size)
-    sub $s1, $s1, $s3  #$s1 = sadSize_y
+
+    # Save ONLY the registers we'll modify
     
-    li $s4, 1000000 # make sure register has enough bits for big value, sets sad_min = 1,000,000
-
-    li    $t0, 1    # $t0 will be window_track_x ( initilized and stays at 1 until movement starts)
-    li    $t1, 1    # $t1 will be window_track_y 
-  #WRONG  add    $t1, $s1, $zero    # $t1 will be window_track_y (set to max y value since it starts at "top"
-     li $t3, 1   #used to store value 1 for comparison
-
-    li    $s5, 1  # $s5 will be sad_window_track_row (SAD MIN row)
-    li    $s6, 1  # $s6 will be sad_window_track_column (SAD MIN column)
-    
-    #RUN FUNCTION HERE 
-    jal ABS_FUNC
-    # ( JUST LIKE WE HAVE A FIRST RUN HERE, WE WILL NEED TO PUT STOP CONDITIONS SOMEWHERE AT A CERTAIN POINT)
-    j MOVMENT_1
+    addi    $sp, $sp, -32
+    sw      $s0, 0($sp)
+    sw      $s1, 4($sp)
+    sw      $s2, 8($sp)
+    sw      $s3, 12($sp)
+    sw      $s4, 16($sp)
+    sw      $s5, 20($sp)
+    sw      $s6, 24($sp)
+    sw      $s7, 28($sp)
     
     
-
-
-#Start of movements
-#Movement 1 (x cord +1) (1 right)
-# NEED TO ADD JUMP LOCATION HERE (see line below)
-MOVEMENT_1:
-         
-addi $t0, $t0, 1 #window_track_x = window_track_x + 1  (MAKE SURE t registers will save)
-
-jal ABS_FUNC  # Runs ABS FUNCTION
-
-beq $t1,$t3, MOVEMENT_4  # If y cord is 1 (at top) then go to MOVMENT_4 (down and left)
-beq $t1,$s1, MOVEMENT_3  #If y cord is sad_size_y(at bottom) then go to MOVEMENT_3 (up and right)
-
-                     
-#Movement 2 (y cord + 1) (1 down)
-# NEED TO ADD JUMP LOCATION HERE (see line below)
-MOVEMENT_2:     
-    addi $t1, $t1, 1   # add since it increases the depth level of y (counter intuitive)
-# RUN ABS FUNCTION HERE:!!!!!
-jal ABS_FUNC  # Runs ABS FUNCTION
-
-beq $t0,$t3, MOVEMENT_3  # if on left side of grid (x=1), start moving up right (Movement 3)
-beq $t0,$s0, MOVEMENT_4  # if on right side of grid (x = sad_size_z), start moving down left (Movment 4)
- # need to flesh out branches in if condition (might need 4?)
-
-
-
-
- #Movement 3 (diagonal up-right)
- # NEED TO ADD JUMP LOCATION HERE (see line below) DONE
- 
- MOVEMENT_3: 
-
-
-# CHECK THIS TO SEE IF FLIPPED
-#VERY IMPRORTANT THAT FOLLOWING bge's ARE IN THIS SPECIFIC ORDER
-  bge $t0,$s0, MOVEMENT_2  # if window_track_x hits the rightmost x bound (aka sad_size_x), go to movement 2 (move down 1)
-  bge $t3,$t1, MOVEMENT_1    # if window_track_y is back at the y=1 level jump to movement 1 (move right 1)
-                            # aka if the window_track_y hits the top bound of 
-  
- addi $t0, $t0, 1   #window_track_x++   (move x to the right Column 2 -> column 3)
- addi $t1, $t1, -1   #window_track_y--  (this moves it up a row EX: row 3 to row 2)
- 
- jal ABS_FUNC  # Runs ABS FUNCTION
- 
- j MOVEMENT_3
-
-
-
- #Movement 4 (diagonal left-down)
- # NEED TO ADD JUMP LOCATION HERE (see line below)
- MOVEMENT_4: 
- bge $t1 , $s1, MOVEMENT_1  # if y-tracker is equal to sad_size_y, then jump to movement 1 (move right 1)
- bge $t0,$t3, MOVEMENT_2  # if window_track_x is back at the 1 level jump to movement 2 (move down 1)
- 
- addi $t0, $t0, -1   #window_track_x--
- addi $t1, $t1, 1   #window_track_y++   (this moves it down a row EX: row 2 to row 3)
- 
- jal ABS_FUNC # Runs ABS FUNCTION
- 
- j MOVEMENT_4
-    # insert your code here
-
-
-ABS_FUNC: 
-li $t4, 0    #This is our function temp var SAD (See c code)
-add $t5, $zero, $t0   #$t5 will be our outer loop var (I), initilized to window_track_x
-add $t6, $zero, $t1 #$t6 will be our inner loop var (J), initilized to window_track_y
-beq $t5, $s2, JUMP TO if(SAD < sad_min) #FIXX!!!  (This line says if for condition ends 
-                                               #  (i < window_x_size) then it compares SAD to SAD_min)
-beq $t6, $s3, JUMP TO above statement #FIXXX!!
-
-#SAD = SAD + abs(array[i][j] - window[i][j]);
-#To implement this, we need to access the a$? data using an offset based off i*j
-#We then need to run our subtraction and addition instructions to get SAD
-#BELOW WILL BE THE LAST OF THE C code that needs to be written
-
-#if (SAD < sad_min){
-#  sad_min = SAD;   //CHECK THIS, either implement the comparison in the function or outside of it.
-#  sad_min_row = i;   // this will be $v0
-#  sad_min_column = j; // this will be $v1
-#  }
-
-
+    #addi    $sp, $sp, -36			Latest version of the stack that works 10/5 13:42
+    #sw      $ra, 0($sp)
+    #sw      $s0, 4($sp)     # asize address
+    #sw      $s1, 8($sp)     # frame address  
+    #sw      $s2, 12($sp)     # window address
+    #sw      $s3, 16($sp)    # frame rows (i)
+    #sw      $s4, 20($sp)    # frame cols (j)
+    #sw      $s5, 24($sp)    # window rows (k)
+    #sw      $s6, 28($sp)    # window cols (l)
+    #sw      $s7, 32($sp)    # min SAD value
    
+    #addi    $sp, $sp, -32
+    #sw      $s0, 0($sp)     # asize address
+    #sw      $s1, 4($sp)     # frame address  
+    #sw      $s2, 8($sp)     # window address
+    #sw      $s3, 12($sp)    # frame rows (i)
+    #sw      $s4, 16($sp)    # frame cols (j)
+    #sw      $s5, 20($sp)    # window rows (k)
+    #sw      $s6, 24($sp)    # window cols (l)
+    #sw      $s7, 28($sp)    # min SAD value
+    
+    # Save parameters
+    move    $s0, $a0
+    move    $s1, $a1
+    move    $s2, $a2
+    
+    # Load dimensions
+    lw      $s3, 0($s0)     # frame rows (i)
+    lw      $s4, 4($s0)     # frame cols (j)
+    lw      $s5, 8($s0)     # window rows (k)
+    lw      $s6, 12($s0)    # window cols (l)
+    
+    # Initialize min SAD and best position
+    li      $s7, 0x7FFFFFFF
+    li      $v0, 0
+    li      $v1, 0
+    
+    # Calculate max valid positions
+    sub     $t8, $s3, $s5    # max_row = frame_rows - window_rows
+    sub     $t9, $s4, $s6    # max_col = frame_cols - window_cols
+    #addi    $t8, $t8, 1      # max_row = max_row + 1 for making the feasible search window
+    #addi    $t9, $t9, 1      # max_row = max_col + 1 for making the feasible search window
+    # Diagonal search: d = row + col
+    add     $t0, $t8, $t9    # total diagonals
+    li      $t1, 0           # current diagonal
+    
+diag_loop:
+    bgt     $t1, $t0, done
+    
+    # For this diagonal, check all rows
+    li      $t2, 0           # current row
+    
+row_loop:
+    bgt     $t2, $t8, next_diag
+    
+    # Calculate col = diagonal - row
+    sub     $t3, $t1, $t2
+    
+    # Check if col is valid
+    bltz    $t3, next_row
+    bgt     $t3, $t9, next_row
+    
+    # Valid position: row=$t2, col=$t3
+    # Calculate frame starting address
+    mul     $t4, $t2, $s4    # row * frame_cols
+    add     $t4, $t4, $t3    # + col
+    sll     $t4, $t4, 2      # * 4
+    add     $t4, $s1, $t4    # frame base address
+    
+    # Calculate SAD for this position
+    li      $t5, 0           # SAD = 0
+    li      $t6, 0           # win_row = 0
+    
+sad_row_loop:
+    bge     $t6, $s5, check_sad    # if win_row >= window_rows
+    
+    li      $t7, 0           # win_col = 0
+    
+    # Calculate window row address
+    mul     $a1, $t6, $s6    # win_row * window_cols
+    sll     $a1, $a1, 2      # * 4
+    add     $a1, $s2, $a1    # window row start
+    
+    # Calculate frame row address
+    mul     $a0, $t6, $s4    # win_row * frame_cols
+    sll     $a0, $a0, 2      # * 4
+    add     $a0, $t4, $a0    # frame row start
+    
+sad_col_loop:
+    bge     $t7, $s6, sad_row_done    # if win_col >= window_cols
+    
+    # Load frame and window pixels
+    lw      $a2, 0($a0)
+    lw      $a3, 0($a1)
+    
+    # Calculate absolute difference
+    sub     $a2, $a2, $a3
+    bgez    $a2, abs_done
+    sub     $a2, $zero, $a2
+abs_done:
+    
+    # Add to SAD
+    add     $t5, $t5, $a2
+    
+    # Move to next column
+    addi    $a0, $a0, 4
+    addi    $a1, $a1, 4
+    addi    $t7, $t7, 1
+    j       sad_col_loop
+    
+sad_row_done:
+    addi    $t6, $t6, 1
+    j       sad_row_loop
+    
+check_sad:
+    # Check if this SAD is better (<=)
+    bgt     $t5, $s7, next_row    #ORIGNINAL LINE
+   	# Update minimum and best position
+    move    $s7, $t5
+    move    $v0, $t2
+    move    $v1, $t3
+    
+    #beq     $s7, $zero, done COMMENTED THIS OUT
+    
+next_row:
+    addi    $t2, $t2, 1
+    j       row_loop
+    
+next_diag:
+    addi    $t1, $t1, 1
+    j       diag_loop
+    
+done:
+    # Restore saved registers (NO $ra) 
+    
+    # Restore s-registers only
+    lw      $s7, 28($sp)
+    lw      $s6, 24($sp)
+    lw      $s5, 20($sp)
+    lw      $s4, 16($sp)
+    lw      $s3, 12($sp)
+    lw      $s2, 8($sp)
+    lw      $s1, 4($sp)
+    lw      $s0, 0($sp)
+    addi    $sp, $sp, 32
+    
+    jr      $ra
+    #loop: j loop
+    
+
+    #lw      $s7, 32($sp)	#latest version that works with test cases but exits with errors
+    #lw      $s6, 28($sp)
+    #lw      $s5, 24($sp)
+    #lw      $s4, 20($sp)
+    #lw      $s3, 16($sp)
+    #lw      $s2, 12($sp)
+    #lw      $s1, 8($sp)
+    #lw      $s0, 4($sp)
+    #lw      $ra, 0($sp)
+    #addi    $sp, $sp, 36
+    #jr      $ra
+
+    #lw      $ra, 0($sp)
+    #lw      $s0, 4($sp)     # asize address
+    #lw      $s1, 8($sp)     # frame address  
+    #lw      $s2, 12($sp)     # window address
+    #lw      $s3, 16($sp)    # frame rows (i)
+    #lw      $s4, 20($sp)    # frame cols (j)
+    #lw      $s5, 24($sp)    # window rows (k)
+    #lw      $s6, 28($sp)    # window cols (l)
+    #lw      $s7, 32($sp)    # min SAD value
+    #addi    $sp, $sp, 36
+    #lw      $s0, 0($sp)
+    #lw      $s1, 4($sp)
+    #lw      $s2, 8($sp)
+    #lw      $s3, 12($sp)
+    #lw      $s4, 16($sp)
+    #lw      $s5, 20($sp)
+    #lw      $s6, 24($sp)
+    #lw      $s7, 28($sp)
+    #addi    $sp, $sp, 32
