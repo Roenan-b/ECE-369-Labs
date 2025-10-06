@@ -39,6 +39,24 @@ module ALU32Bit(ALUControl, A, B, ALUResult, Zero);
 	output [31:0] ALUResult;	// answer
 	output Zero;	    // Zero=1 if ALUResult == 0
 
+
+
+	always @* begin
+		case (ALUControl)
+			4'd0 <= A & B;
+			4'd1 <= A | B;
+			4'd2 <= A + B;
+			4'd5 <= A - B;
+			4'd7 <= A =<B;
+			4'd?? <= ~(A | B);
+			4'd?? <= A ^ B;
+			
+
+		endcase
+		if (ALUControl = 0) begin
+		Zero <= 1;
+		end 
+	end
     /* Please fill in the implementation here... */
 
 endmodule
