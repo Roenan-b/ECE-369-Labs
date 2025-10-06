@@ -2,7 +2,9 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // ECE369 - Computer Architecture
-// 
+// Team Members: Roenan Bingle, Evan Harris, Noah Monroe
+// % Effort    :   33%         |     33%    |     33% 
+//
 // Module - data_memory.v
 // Description - 32-Bit wide data memory.
 //
