@@ -64,7 +64,7 @@ module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegW
 
 
 	//Check this one, kinda confused
-	reg [31:0] regs [31:0];
+	reg [31:0] regs [0:31];
 
 
 	
