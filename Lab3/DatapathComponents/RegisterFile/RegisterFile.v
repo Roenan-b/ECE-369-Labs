@@ -50,21 +50,30 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegWrite, Clk, ReadData1, ReadData2);
-  input [4:0] ReadRegister1;
-  input [4:0] ReadRegister2;
-  input [4:0] WriteRegister;
-  input [31:0] WriteData;
-  input RegWrite;
+  input wire [4:0] ReadRegister1;
+  input wire [4:0] ReadRegister2;
+  input wire [4:0] WriteRegister;
+  input wire [31:0] WriteData;
+  input wire RegWrite;
+	
   output reg [31:0] ReadData1;
   output reg [31:0] ReadData2;
 
+
+	//Check this one, kinda confused
+	reg [31:0] regs [31:0];
+
+
+	
   always @(negedge Clk) begin
   
 
   end 
+	
   always @(posedge Clk) begin
     if (RegWrite) begin 
-
+		regs[WriteData] <= WriteRegister;
+		
     end
 
   end 
