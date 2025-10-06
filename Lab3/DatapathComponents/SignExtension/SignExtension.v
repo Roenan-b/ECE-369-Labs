@@ -2,6 +2,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // ECE369 - Computer Architecture
 // 
+// 
+// Team Members: Roenan Bingle, Evan Harris, Noah Monroe
+// % Effort    :   33%         |     33%    |     33% 
+//
 // Module - SignExtension.v
 // Description - Sign extension module.
 ////////////////////////////////////////////////////////////////////////////////
@@ -18,4 +22,5 @@ module SignExtension(in, out);
     assign out = {{16{in[15]}}, in};
 
 endmodule
+
 
