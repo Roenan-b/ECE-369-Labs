@@ -3,6 +3,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 // ECE369 - Computer Architecture
 // 
+// Team Members: Roenan Bingle, Evan Harris, Noah Monroe
+// % Effort    :   33%         |     33%    |     33% 
+//
 // Module - Mux32Bit2To1.v
 // Description - Performs signal multiplexing between 2 32-Bit words.
 ////////////////////////////////////////////////////////////////////////////////
@@ -26,4 +29,5 @@ module Mux32Bit2To1(out, inA, inB, sel);
     end
 
 endmodule
+
 
