@@ -3,6 +3,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // ECE369 - Computer Architecture
 // 
+// 
+// Team Members: Roenan Bingle, Evan Harris, Noah Monroe
+// % Effort    :   33%         |     33%    |     33% 
+//
 // Module - RegisterFile.v
 // Description - Test the register_file
 // Suggested test case - First write arbitrary values into 
