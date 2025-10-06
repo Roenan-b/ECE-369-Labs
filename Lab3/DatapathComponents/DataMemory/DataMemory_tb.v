@@ -3,6 +3,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // ECE369 - Computer Architecture
 // 
+//
+// Team Members: Roenan Bingle, Evan Harris, Noah Monroe
+// % Effort    :   33%         |     33%    |     33% 
+//
 // Module - DataMemory_tb.v
 // Description - Test the 'DataMemory.v' module.
 ////////////////////////////////////////////////////////////////////////////////
@@ -38,4 +42,5 @@ module DataMemory_tb();
 	end
 
 endmodule
+
 
