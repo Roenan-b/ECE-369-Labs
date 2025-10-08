@@ -777,15 +777,8 @@ print_result:
 #          (v1) y coordinate of the block in the frame with the minimum SAD
 
 
-# Begin subroutine
-vbsme:  
-    li      $v0, 0              # reset $v0 and $V1
-    li      $v1, 0
-
-
-
-    # Save ONLY the registers we'll modify
-    
+vbsme:
+    # Save registers
     addi    $sp, $sp, -32
     sw      $s0, 0($sp)
     sw      $s1, 4($sp)
@@ -796,107 +789,96 @@ vbsme:
     sw      $s6, 24($sp)
     sw      $s7, 28($sp)
     
-    
-    #addi    $sp, $sp, -36			Latest version of the stack that works 10/5 13:42
-    #sw      $ra, 0($sp)
-    #sw      $s0, 4($sp)     # asize address
-    #sw      $s1, 8($sp)     # frame address  
-    #sw      $s2, 12($sp)     # window address
-    #sw      $s3, 16($sp)    # frame rows (i)
-    #sw      $s4, 20($sp)    # frame cols (j)
-    #sw      $s5, 24($sp)    # window rows (k)
-    #sw      $s6, 28($sp)    # window cols (l)
-    #sw      $s7, 32($sp)    # min SAD value
-   
-    #addi    $sp, $sp, -32
-    #sw      $s0, 0($sp)     # asize address
-    #sw      $s1, 4($sp)     # frame address  
-    #sw      $s2, 8($sp)     # window address
-    #sw      $s3, 12($sp)    # frame rows (i)
-    #sw      $s4, 16($sp)    # frame cols (j)
-    #sw      $s5, 20($sp)    # window rows (k)
-    #sw      $s6, 24($sp)    # window cols (l)
-    #sw      $s7, 28($sp)    # min SAD value
-    
     # Save parameters
-    move    $s0, $a0
-    move    $s1, $a1
-    move    $s2, $a2
+    move    $s0, $a0        # asize address
+    move    $s1, $a1        # frame address  
+    move    $s2, $a2        # window address
     
     # Load dimensions
-    lw      $s3, 0($s0)     # frame rows (i)
-    lw      $s4, 4($s0)     # frame cols (j)
-    lw      $s5, 8($s0)     # window rows (k)
-    lw      $s6, 12($s0)    # window cols (l)
+    lw      $s3, 0($s0)     # frame rows
+    lw      $s4, 4($s0)     # frame cols
+    lw      $s5, 8($s0)     # window rows
+    lw      $s6, 12($s0)    # window cols
     
-    # Initialize min SAD and best position
-    li      $s7, 0x7FFFFFFF
-    li      $v0, 0
-    li      $v1, 0
-    
-    # Calculate max valid positions
+    # Calculate search bounds
     sub     $t8, $s3, $s5    # max_row = frame_rows - window_rows
     sub     $t9, $s4, $s6    # max_col = frame_cols - window_cols
-    #addi    $t8, $t8, 1      # max_row = max_row + 1 for making the feasible search window
-    #addi    $t9, $t9, 1      # max_row = max_col + 1 for making the feasible search window
-    # Diagonal search: d = row + col
-    add     $t0, $t8, $t9    # total diagonals
-    li      $t1, 0           # current diagonal
     
-diag_loop:
-    bgt     $t1, $t0, done
+    # Initialize min SAD and best position
+    li      $s7, 0x7FFFFFFF  # min SAD (start with max int)
+    li      $v0, 0           # best row
+    li      $v1, 0           # best col
     
-    # For this diagonal, check all rows
-    li      $t2, 0           # current row
+    # Zigzag diagonal search
+    li      $t0, 0           # current diagonal
+    add     $t1, $t8, $t9    # max diagonal = max_row + max_col
+
+zigzag_loop:
+    bgt     $t0, $t1, done
     
-row_loop:
-    bgt     $t2, $t8, next_diag
+    # Check parity for zigzag direction - SWAPPED
+    andi    $t2, $t0, 1      # 0 = even, 1 = odd
+    beqz    $t2, bottom_to_top   # EVEN: search bottom to top (right first)
+    j       top_to_bottom        # ODD: search top to bottom (down first)
+
+bottom_to_top:
+    # Search diagonal from bottom to top: (d,0), (d-1,1), (d-2,2), ...
+    move    $t2, $t0         # start row = diagonal
     
-    # Calculate col = diagonal - row
-    sub     $t3, $t1, $t2
+bottom_top_search:
+    bltz    $t2, zigzag_next         # if row < 0
+    bgt     $t2, $t8, bottom_top_adjust
     
-    # Check if col is valid
-    bltz    $t3, next_row
-    bgt     $t3, $t9, next_row
+    j       bottom_top_continue
     
-    # Valid position: row=$t2, col=$t3
+bottom_top_adjust:
+    move    $t2, $t8         # clamp to max_row
+
+bottom_top_continue:
+    # col = diagonal - row
+    sub     $t3, $t0, $t2
+    
+    bltz    $t3, bottom_top_next      # if col < 0
+    bgt     $t3, $t9, bottom_top_next # if col > max_col
+    
+    # VALID POSITION (t2, t3) - Calculate SAD
     # Calculate frame starting address
     mul     $t4, $t2, $s4    # row * frame_cols
     add     $t4, $t4, $t3    # + col
-    sll     $t4, $t4, 2      # * 4
+    sll     $t4, $t4, 2      # * 4 for word alignment
     add     $t4, $s1, $t4    # frame base address
     
-    # Calculate SAD for this position
+    # Calculate SAD
     li      $t5, 0           # SAD = 0
     li      $t6, 0           # win_row = 0
-    
-sad_row_loop:
-    bge     $t6, $s5, check_sad    # if win_row >= window_rows
-    
-    li      $t7, 0           # win_col = 0
+
+bt_sad_row_loop:
+    bge     $t6, $s5, bt_check_sad
     
     # Calculate window row address
     mul     $a1, $t6, $s6    # win_row * window_cols
     sll     $a1, $a1, 2      # * 4
     add     $a1, $s2, $a1    # window row start
     
-    # Calculate frame row address
+    # Calculate frame row address  
     mul     $a0, $t6, $s4    # win_row * frame_cols
     sll     $a0, $a0, 2      # * 4
     add     $a0, $t4, $a0    # frame row start
     
-sad_col_loop:
-    bge     $t7, $s6, sad_row_done    # if win_col >= window_cols
+    li      $t7, 0           # win_col = 0
+
+bt_sad_col_loop:
+    bge     $t7, $s6, bt_sad_row_done
     
     # Load frame and window pixels
-    lw      $a2, 0($a0)
-    lw      $a3, 0($a1)
+    lw      $a2, 0($a0)      # frame pixel
+    lw      $a3, 0($a1)      # window pixel
     
     # Calculate absolute difference
     sub     $a2, $a2, $a3
-    bgez    $a2, abs_done
-    sub     $a2, $zero, $a2
-abs_done:
+    bgez    $a2, bt_abs_done
+    sub     $a2, $zero, $a2  # absolute value
+bt_abs_done:
     
     # Add to SAD
     add     $t5, $t5, $a2
@@ -905,34 +887,110 @@ abs_done:
     addi    $a0, $a0, 4
     addi    $a1, $a1, 4
     addi    $t7, $t7, 1
-    j       sad_col_loop
-    
-sad_row_done:
+    j       bt_sad_col_loop
+
+bt_sad_row_done:
     addi    $t6, $t6, 1
-    j       sad_row_loop
+    j       bt_sad_row_loop
+
+bt_check_sad:
+    # Update if SAD <= current min (to get last best position)
+    bgt     $t5, $s7, bottom_top_next
     
-check_sad:
-    # Check if this SAD is better (<=)
-    bgt     $t5, $s7, next_row    #ORIGNINAL LINE
-   	# Update minimum and best position
+    # Update minimum SAD and best position
     move    $s7, $t5
-    move    $v0, $t2
-    move    $v1, $t3
+    move    $v0, $t2         # best row
+    move    $v1, $t3         # best col
+
+bottom_top_next:
+    addi    $t2, $t2, -1     # move up to next row
+    j       bottom_top_search
+
+top_to_bottom:
+    # Search diagonal from top to bottom: (0,d), (1,d-1), (2,d-2), ...
+    li      $t2, 0           # start row = 0
     
-    #beq     $s7, $zero, done COMMENTED THIS OUT
+top_bottom_search:
+    bgt     $t2, $t0, zigzag_next    # if row > diagonal
+    bgt     $t2, $t8, zigzag_next    # if row > max_row
     
-next_row:
-    addi    $t2, $t2, 1
-    j       row_loop
+    # col = diagonal - row
+    sub     $t3, $t0, $t2
     
-next_diag:
-    addi    $t1, $t1, 1
-    j       diag_loop
+    bltz    $t3, top_bottom_next      # if col < 0
+    bgt     $t3, $t9, top_bottom_next # if col > max_col
     
+    # VALID POSITION (t2, t3) - Calculate SAD
+    # Calculate frame starting address
+    mul     $t4, $t2, $s4    # row * frame_cols
+    add     $t4, $t4, $t3    # + col
+    sll     $t4, $t4, 2      # * 4 for word alignment
+    add     $t4, $s1, $t4    # frame base address
+    
+    # Calculate SAD
+    li      $t5, 0           # SAD = 0
+    li      $t6, 0           # win_row = 0
+
+tb_sad_row_loop:
+    bge     $t6, $s5, tb_check_sad
+    
+    # Calculate window row address
+    mul     $a1, $t6, $s6    # win_row * window_cols
+    sll     $a1, $a1, 2      # * 4
+    add     $a1, $s2, $a1    # window row start
+    
+    # Calculate frame row address  
+    mul     $a0, $t6, $s4    # win_row * frame_cols
+    sll     $a0, $a0, 2      # * 4
+    add     $a0, $t4, $a0    # frame row start
+    
+    li      $t7, 0           # win_col = 0
+
+tb_sad_col_loop:
+    bge     $t7, $s6, tb_sad_row_done
+    
+    # Load frame and window pixels
+    lw      $a2, 0($a0)      # frame pixel
+    lw      $a3, 0($a1)      # window pixel
+    
+    # Calculate absolute difference
+    sub     $a2, $a2, $a3
+    bgez    $a2, tb_abs_done
+    sub     $a2, $zero, $a2  # absolute value
+tb_abs_done:
+    
+    # Add to SAD
+    add     $t5, $t5, $a2
+    
+    # Move to next column
+    addi    $a0, $a0, 4
+    addi    $a1, $a1, 4
+    addi    $t7, $t7, 1
+    j       tb_sad_col_loop
+
+tb_sad_row_done:
+    addi    $t6, $t6, 1
+    j       tb_sad_row_loop
+
+tb_check_sad:
+    # Update if SAD <= current min (to get last best position)
+    bgt     $t5, $s7, top_bottom_next
+    
+    # Update minimum SAD and best position
+    move    $s7, $t5
+    move    $v0, $t2         # best row
+    move    $v1, $t3         # best col
+
+top_bottom_next:
+    addi    $t2, $t2, 1      # move down to next row
+    j       top_bottom_search
+
+zigzag_next:
+    addi    $t0, $t0, 1      # next diagonal
+    j       zigzag_loop
+
 done:
-    # Restore saved registers (NO $ra) 
-    
-    # Restore s-registers only
+    # Restore registers
     lw      $s7, 28($sp)
     lw      $s6, 24($sp)
     lw      $s5, 20($sp)
@@ -944,37 +1002,3 @@ done:
     addi    $sp, $sp, 32
     
     jr      $ra
-    #loop: j loop
-    
-
-    #lw      $s7, 32($sp)	#latest version that works with test cases but exits with errors
-    #lw      $s6, 28($sp)
-    #lw      $s5, 24($sp)
-    #lw      $s4, 20($sp)
-    #lw      $s3, 16($sp)
-    #lw      $s2, 12($sp)
-    #lw      $s1, 8($sp)
-    #lw      $s0, 4($sp)
-    #lw      $ra, 0($sp)
-    #addi    $sp, $sp, 36
-    #jr      $ra
-
-    #lw      $ra, 0($sp)
-    #lw      $s0, 4($sp)     # asize address
-    #lw      $s1, 8($sp)     # frame address  
-    #lw      $s2, 12($sp)     # window address
-    #lw      $s3, 16($sp)    # frame rows (i)
-    #lw      $s4, 20($sp)    # frame cols (j)
-    #lw      $s5, 24($sp)    # window rows (k)
-    #lw      $s6, 28($sp)    # window cols (l)
-    #lw      $s7, 32($sp)    # min SAD value
-    #addi    $sp, $sp, 36
-    #lw      $s0, 0($sp)
-    #lw      $s1, 4($sp)
-    #lw      $s2, 8($sp)
-    #lw      $s3, 12($sp)
-    #lw      $s4, 16($sp)
-    #lw      $s5, 20($sp)
-    #lw      $s6, 24($sp)
-    #lw      $s7, 28($sp)
-    #addi    $sp, $sp, 32
