@@ -1,0 +1,157 @@
+`timescale 1ns/1ps
+
+module RegisterFile_tb;
+
+  // DUT ports
+  reg  [4:0]  ReadRegister1;
+  reg  [4:0]  ReadRegister2;
+  reg  [4:0]  WriteRegister;
+  reg  [31:0] WriteData;
+  reg         RegWrite;
+  reg         Clk;
+
+  wire [31:0] ReadData1;
+  wire [31:0] ReadData2;
+
+  // Instantiate DUT
+  RegisterFile dut (
+    .ReadRegister1(ReadRegister1),
+    .ReadRegister2(ReadRegister2),
+    .WriteRegister(WriteRegister),
+    .WriteData(WriteData),
+    .RegWrite(RegWrite),
+    .Clk(Clk),
+    .ReadData1(ReadData1),
+    .ReadData2(ReadData2)
+  );
+
+  // Clock: 10ns period (100 MHz)
+  initial Clk = 0;
+  always #5 Clk = ~Clk;
+
+  // Utility tasks
+  task write_reg(input [4:0] rd, input [31:0] data);
+    begin
+      // Set up inputs *before* the active posedge
+      WriteRegister = rd;
+      WriteData     = data;
+      RegWrite      = 1'b1;
+      @(posedge Clk);  // write happens here (posedge)
+      // Deassert after posedge to avoid unintended writes
+      RegWrite      = 1'b0;
+      WriteRegister = 5'd0;
+      WriteData     = 32'hx;
+    end
+  endtask
+
+  task read_regs(input [4:0] rs1, input [4:0] rs2, output [31:0] r1, output [31:0] r2);
+    begin
+      // Set addresses, then sample on next negedge (per spec)
+      ReadRegister1 = rs1;
+      ReadRegister2 = rs2;
+      @(negedge Clk);  // outputs latch at negedge in DUT
+      r1 = ReadData1;
+      r2 = ReadData2;
+    end
+  endtask
+
+  task expect_eq(input [31:0] got, input [31:0] exp, input [127:0] msg);
+    begin
+      if (got !== exp) begin
+        $display("[%0t] ERROR: %s: got=0x%08h exp=0x%08h", $time, msg, got, exp);
+        $fatal(1);
+      end else begin
+        $display("[%0t] OK: %s: 0x%08h", $time, msg, got);
+      end
+    end
+  endtask
+
+  // Optional waveform dump (Icarus/GTKWave)
+  initial begin
+    `ifdef DUMP
+      $dumpfile("register_file_tb.vcd");
+      $dumpvars(0, RegisterFile_tb);
+    `endif
+  end
+
+  // Test sequence
+  initial begin : test_plan
+    integer i;
+    reg [31:0] r1, r2;
+
+    // Default inputs
+    ReadRegister1 = 5'd0;
+    ReadRegister2 = 5'd0;
+    WriteRegister = 5'd0;
+    WriteData     = 32'd0;
+    RegWrite      = 1'b0;
+
+    // Allow a couple of cycles for stabilization
+    repeat (2) @(negedge Clk);
+
+    // -----------------------------------------------------------------------
+    // 1) Zero register (x0) must remain 0 even if we try to write it
+    // -----------------------------------------------------------------------
+    write_reg(5'd0, 32'hDEADBEEF);
+    read_regs(5'd0, 5'd0, r1, r2);
+    expect_eq(r1, 32'h0000_0000, "x0 must read as 0 after attempted write");
+    expect_eq(r2, 32'h0000_0000, "x0 must read as 0 (second port)");
+
+    // -----------------------------------------------------------------------
+    // 2) Simple write/read: write r5=0xAAAA5555, read back on both ports
+    // -----------------------------------------------------------------------
+    write_reg(5'd5, 32'hAAAA_5555);
+    read_regs(5'd5, 5'd5, r1, r2);
+    expect_eq(r1, 32'hAAAA_5555, "r5 readback on port1");
+    expect_eq(r2, 32'hAAAA_5555, "r5 readback on port2");
+
+    // -----------------------------------------------------------------------
+    // 3) Simultaneous reads of two different regs
+    // -----------------------------------------------------------------------
+    write_reg(5'd10, 32'h1234_5678);
+    write_reg(5'd20, 32'hCAFEBABE);
+    read_regs(5'd10, 5'd20, r1, r2);
+    expect_eq(r1, 32'h1234_5678, "r10 readback on port1");
+    expect_eq(r2, 32'hCAFE_BABE, "r20 readback on port2");
+
+    // -----------------------------------------------------------------------
+    // 4) Back-to-back writes with intervening negedge read checks
+    //    (Ensures timing: write @posedge, read @next negedge)
+    // -----------------------------------------------------------------------
+    write_reg(5'd7, 32'h0F0F_0F0F);
+    read_regs(5'd7, 5'd0, r1, r2);
+    expect_eq(r1, 32'h0F0F_0F0F, "r7 first write readback");
+
+    write_reg(5'd7, 32'hF0F0_F0F0);
+    read_regs(5'd7, 5'd7, r1, r2);
+    expect_eq(r1, 32'hF0F0_F0F0, "r7 overwrite readback (port1)");
+    expect_eq(r2, 32'hF0F0_F0F0, "r7 overwrite readback (port2)");
+
+    // -----------------------------------------------------------------------
+    // 5) No write when RegWrite=0
+    // -----------------------------------------------------------------------
+    WriteRegister = 5'd12;
+    WriteData     = 32'h1111_2222;
+    RegWrite      = 1'b0;
+    @(posedge Clk); // no write should happen
+    read_regs(5'd12, 5'd12, r1, r2);
+    expect_eq(r1, 32'h0000_0000, "r12 remains 0 because RegWrite=0");
+    expect_eq(r2, 32'h0000_0000, "r12 remains 0 because RegWrite=0 (port2)");
+    // Cleanup
+    WriteRegister = 5'd0; WriteData = 32'hx;
+
+    // -----------------------------------------------------------------------
+    // 6) Sweep write/read a few registers
+    // -----------------------------------------------------------------------
+    for (i = 1; i <= 8; i = i + 1) begin
+      write_reg(i[4:0], {24'h0, i[7:0]}); // data = i
+    end
+    read_regs(5'd3, 5'd8, r1, r2);
+    expect_eq(r1, 32'd3, "r3 after sweep");
+    expect_eq(r2, 32'd8, "r8 after sweep");
+
+    $display("[%0t] All tests PASSED ✅", $time);
+    $finish;
+  end
+
+endmodule
