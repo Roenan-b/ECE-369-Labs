@@ -53,12 +53,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegWrite, Clk, ReadData1, ReadData2);
-  input wire [4:0] ReadRegister1;
-  input wire [4:0] ReadRegister2;
-  input wire [4:0] WriteRegister;
-  input wire [31:0] WriteData;
+  input [4:0] ReadRegister1;
+  input [4:0] ReadRegister2;
+  input [4:0] WriteRegister;
+  input [31:0] WriteData;
   input Clk;
-  input wire RegWrite;
+  input RegWrite;
 	
   output reg [31:0] ReadData1;
   output reg [31:0] ReadData2;
