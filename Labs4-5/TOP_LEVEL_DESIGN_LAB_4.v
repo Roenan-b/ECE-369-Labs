@@ -10,7 +10,7 @@ module toplevel(instructionRead,CLk,instructionWrite);
     assign   rs = instructionRead [25:21]
     assign   rt = instructionRead [20:16]
       assign rd = instructionRead [15:11];
-  assign imm = instructionRead [10:6];   //CHANGE this need func code
+  assign shamt = instructionRead [10:6]; 
   assign funct = instructionRead [5:0];
 
   
