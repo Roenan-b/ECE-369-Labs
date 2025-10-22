@@ -33,7 +33,7 @@ module toplevel(instructionRead,CLk,instructionWrite);
   
   Adder a8(PCAddResult, immSL2, instructionSig); //Adds PC instruction+4 (Output of PCADDER) and Imm*4 (Shift left 2 module) together, sending to PC mux
 
-  Mux32Bit2To1 a9(out, inA, inB, sel) //Chooses between PCaddResult and instructionSig (Output of Adder)
+  Mux32Bit2To1 a9(out, inA, inB, sel); //Chooses between PCaddResult and instructionSig (Output of Adder)
 
   DataMemory a10(ALUResult, ReadData2, Clk, MemWrite, MemRead, ReadData); //Should be good
 
