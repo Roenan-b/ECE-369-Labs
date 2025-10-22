@@ -4,7 +4,7 @@
 // COMPLETE 32-BIT MIPS ALU WITH STANDARDIZED CONTROL ENCODING
 // ============================================================================
 module ALU32Bit(
-    input [4:0] ALUControl,
+    input [5:0] ALUControl,
     input [31:0] A,
     input [31:0] B,
     output reg [31:0] ALUResult,
