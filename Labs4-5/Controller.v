@@ -26,32 +26,32 @@ module controller(   //FIX THIS!!
 
 
   //NEED TO CHANGE TO BIT ENCODINGS
-    localparam OP_RTYPE   = 1; // SPECIAL
-    localparam OP_REGIMM  = 2; // BLTZ/BGEZ via rt field  CHANGE THIS
-    localparam OP_J       = 3;
-    localparam OP_JAL     = 4;
-    localparam OP_BEQ     = 5;
-    localparam OP_BNE     = 6;
-    localparam OP_BLEZ    = 7;
-    localparam OP_BGTZ    = 8;
+  localparam OP_RTYPE   = 6'b000000; // SPECIAL
+  localparam OP_REGIMM  = 6'b000001; // BLTZ/BGEZ via rt
+  localparam OP_J       = 6'b000010;
+  localparam OP_JAL     = 6'b000011;
+  localparam OP_BEQ     = 6'b000100;
+  localparam OP_BNE     = 6'b000101;
+  localparam OP_BLEZ    = 6'b000110;
+  localparam OP_BGTZ    = 6'b000111; //7
 
-    localparam OP_ADDI    = 9;
-    localparam OP_SLTI    = 10;
-    localparam OP_ANDI    = 11;
-    localparam OP_ORI     = 12;
-    localparam OP_XORI    = 13;
+  localparam OP_ADDI    = 6'b001000; 
+  localparam OP_SLTI    = 6'b001001; //9
+  localparam OP_ANDI    = 6'b001010;
+  localparam OP_ORI     = 6'b001011; //11
+  localparam OP_XORI    = 6'b001100; //12
 
-    localparam OP_LB      = 14;
-    localparam OP_LH      = 15;
-    localparam OP_LW      = 16;
+  localparam OP_LB      = 6'b001101;
+  localparam OP_LH      = 6'b001110;
+  localparam OP_LW      = 6'b001111;
 
-    localparam OP_SB      = 17;
-    localparam OP_SH      = 18;
-    localparam OP_SW      = 19;
+  localparam OP_SB      = 6'b010000;
+  localparam OP_SH      = 6'b010001;
+  localparam OP_SW      = 6'b010010;
 
     // In the following, the RT is used as an extension of op-code and it etheir 1 or 0
-    localparam RT_BLTZ    = 0;
-    localparam RT_BGEZ    = 1;
+    localparam RT_BLTZ    = 6'b000000;
+    localparam RT_BGEZ    = 6'b000001;
 
     //Used if doing a JR
   localparam FUNCT_JR = 8; //CHANGE VAL MAYBE?
