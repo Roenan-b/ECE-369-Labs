@@ -39,8 +39,8 @@ module toplevel(instructionRead,CLk,instructionWrite);
 
   Mux32Bit2To1 a7(WriteData, ReadData, ALUResult, MemtoReg); //Takes ReadData vs ALUresult, controlled by MemtoReg
 
-  ALU32Bit (ALUControl, ReadData1, B, ALUResult, Zero);
+  ALU32Bit a11(ALUControl, ReadData1, B, ALUResult, Zero);
   
-  immSL2(signResult,immSL2); //Multiplies in by 4
+  immSL2 a12(signResult,immSL2); //Multiplies in by 4
   
 end module
