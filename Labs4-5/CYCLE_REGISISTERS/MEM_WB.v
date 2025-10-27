@@ -1,18 +1,23 @@
 `timescale 1ns / 1ps
 
 
-module MEM_WB(ReadDataIn, ReadDataOut, ALUResultIn, ALUResultOut, MemtoRegIn, MemtoRegOut, PCSrcIn, PCSrcOut, Clk);
+module MEM_WB(ReadDataIn, ReadDataOut, ALUResultIn, ALUResultOut, MemtoRegIn, MemtoRegOut, RegWriteIn, RegWriteOut, Clk);
   input Clk;
   input [31:0] ALUResultIn;
   input [31:0] ReadDataIn;
   input MemtoRegIn;
-  input PCSrcIn;
+  input RegWriteIn;
+
+  output reg [31:0] ALUResultOut;
+  output reg [31:0] ReadDataOut;
+  output reg MemtoRegOut;
+  output reg RegWriteOut;
   
   always @(posedge Clk) begin
     ALUResultOut <= ALUResultIn;
     ReadDataOut <= ReadDataIn;
     MemtoRegOut <= MemtoRegIn;
-    PCSrcOut <= PCSrcIn;
+    RegWriteOut <= RegWriteIn;
   end
 
 endmodule
