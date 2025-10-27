@@ -8,6 +8,8 @@ module EX_MEM(AddResultIn, AddResultOut, ALUResultIn, ALUResultOut, MuxIn, MuxOu
   input [31:0] ALUResultIn;
   input [4:0] MuxIn;
   input [31:0] ReadData2In;
+
+  //Controller Signals Inputs
   input ZeroIn;
   input MemWriteIn;
   input MemReadIn;
@@ -19,6 +21,8 @@ module EX_MEM(AddResultIn, AddResultOut, ALUResultIn, ALUResultOut, MuxIn, MuxOu
   output reg [31:0] ALUResultOut;
   output reg [4:0] MuxOut;
   output reg [31:0] ReadData2Out;
+
+  //Controller Signals Outputs
   output reg ZeroOut;
   output reg MemWriteOut;
   output reg MemReadOut;
