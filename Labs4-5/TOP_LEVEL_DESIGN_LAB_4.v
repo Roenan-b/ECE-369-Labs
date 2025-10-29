@@ -6,13 +6,6 @@ module toplevel(instructionRead,CLk,instructionWrite);
   output [31:0] instructionWrite;
 
 
-  assign opCode = instructionRead [31:26]
-    assign   rs = instructionRead [25:21]
-    assign   rt = instructionRead [20:16]
-      assign rd = instructionRead [15:11];
-  assign shamt = instructionRead [10:6]; 
-  assign funct = instructionRead [5:0];
-
   
   assign imm = instructionRead [15:0];
 
@@ -20,8 +13,23 @@ module toplevel(instructionRead,CLk,instructionWrite);
   
   PCAdder a4(instructionRead, PCAddResult); //Takes instruction number and adds 4
 
+  //FIRST STAGE REGISTER Fetch->Decode
+  IF_ID a13(PCAddResult,instruction,PCAddResultOut,instructionReadOut,Clk);
+
+  //SECOND STAGE REGISTER Decode->Execute
+
+
   
-  controller a2(instructionRead, Clk, ALUSrc, RegDst, OPCode, MemRead, MemWrite, MemtoReg, RegWrite, Branch,Jump); //Check but should be good
+  
+  assign opCode = instructionReadOut [31:26]
+    assign   rs = instructionReadOut [25:21]
+    assign   rt = instructionReadOut [20:16]
+      assign rd = instructionReadOut [15:11];
+  assign shamt = instructionReadOut [10:6]; 
+  assign funct = instructionReadOut [5:0];
+
+  
+  controller a2(instructionReadOut, Clk, ALUSrc, RegDst, OPCode, MemRead, MemWrite, MemtoReg, RegWrite, Branch,Jump); //Check but should be good
 
   SignExtension a3(imm, signResult);
 
