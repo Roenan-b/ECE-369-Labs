@@ -17,8 +17,16 @@ module toplevel(instructionRead,CLk,instructionWrite);
   IF_ID a13(PCAddResult,instruction,PCAddResultOut,instructionReadOut,Clk);
 
   //SECOND STAGE REGISTER Decode->Execute
-
-
+RegisterID_EX a14(ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOut,ALUopOut,RegDstOut,BranchIn,MemWriteIn,MemReadIn,
+                     BranchOut,MemWriteOut,MemReadOut,MemToRegIn,RegWriteIn,MemToRegOut,RegWriteOut,
+                     ReadData1In,ReadData2In,PCAddResultIn,signResultIn,RTRegdestIn,RDRegdestIn,
+                     ReadData1Out,ReadData2Out,PCAddResultOut,signResultOut,RTRegdestIn,
+                     RDRegdestIn);
+  //THIRD STAGE REGISTER Execute->Memory
+  EX_MEM a15(AddResultIn, AddResultOut, ALUResultIn, ALUResultOut, MuxIn, MuxOut, ReadData2In, ReadData2Out, ZeroIn, ZeroOut,
+              MemWriteIn, MemWriteOut, MemReadIn, MemReadOut, BranchIn, BranchOut, MemtoRegIn, MemtoRegOut, RegWriteIn, RegWriteOut, Clk);
+  //FOURTH STAGE REGISTER Memory->Write Back
+  MEM_WB(ReadDataIn, ReadDataOut, ALUResultIn, ALUResultOut, MemtoRegIn, MemtoRegOut, RegWriteIn, RegWriteOut, Clk);
   
   
   assign opCode = instructionReadOut [31:26]
