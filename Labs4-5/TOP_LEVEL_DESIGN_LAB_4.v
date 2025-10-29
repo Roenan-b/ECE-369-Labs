@@ -13,7 +13,7 @@ module toplevel(instructionRead,CLk,instructionWrite);
   assign funct = instructionReadOut [5:0];
   
   //For I-type instructions
- assign imm = instructionRead [15:0];
+// assign imm = instructionRead [15:0];
   
   assign imm = instructionRead [15:0];
 
@@ -59,7 +59,7 @@ RegisterID_EX a14(ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOutofID/EX,ALUopOutofID/EX,Reg
   //FOURTH STAGE REGISTER Memory->Write Back
   MEM_WB a16(ReadDataIn, ReadDataOut, ALUResultIn, ALUResultOut, MemtoRegIn, MemtoRegOut, RegWriteIn, RegWriteOut, Clk);
   
-   Mux32Bit2To1 a7(WriteData, ReadData, ALUResult, MemtoReg); //Takes ReadData vs ALUresult, controlled by MemtoReg
+   Mux32Bit2To1 a17(WriteData, ReadData, ALUResult, MemtoReg); //Takes ReadData vs ALUresult, controlled by MemtoReg
 
 
  
