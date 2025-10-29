@@ -22,7 +22,7 @@ module toplevel(instructionRead,CLk,instructionWrite);
   PCAdder a4(instructionRead, PCAddResult); //Takes instruction number and adds 4
 
   //FIRST STAGE REGISTER Fetch->Decode
-  IF_ID a13(PCAddResult,instruction,PCAddResultOutofIF/ID,instructionReadOut,Clk);
+  IF_ID a13(PCAddResult,instruction,PCAddResultOutofIFID,instructionReadOut,Clk);
 
     //All "in"-suffix ports feed into ID/EX register
   controller a2(instructionReadOut, Clk, ALUSrcIn, RegDstIn, OPCodeIn, MemReadIn, MemWriteIn, MemtoRegIn, RegWriteIn, BranchIn,Jump); //Check but should be good
@@ -34,37 +34,35 @@ module toplevel(instructionRead,CLk,instructionWrite);
 
   
   //SECOND STAGE REGISTER Decode->Execute
-RegisterID_EX a14(ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOutofID/EX,ALUopOutofID/EX,RegDstOutofID/EX,BranchIn,MemWriteIn,MemReadIn,
-                     BranchOutofID/EX,MemWriteOutofID/EX,MemReadOutofID/EX,MemToRegIn,RegWriteIn,MemToRegOutofID/EX,RegWriteOutofID/EX,
-                     ReadData1In,ReadData2In,PCAddResultOutofIF/ID,signResultIn,rt,rd,
-                     ReadData1OutofID/EX,ReadData2OutofID/ED,PCAddResultOutofID/EX,signResultOutofID/EX,RTRegdestOutofID/EX,
-                     RDRegdestOutofID/EX);
+RegisterID_EX a14(ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOutofIDEX,ALUopOutofIDEX,RegDstOutofIDEX,BranchIn,MemWriteIn,MemReadIn,
+                     BranchOutofIDEX,MemWriteOutofIDEX,MemReadOutofIDEX,MemToRegIn,RegWriteIn,MemToRegOutofIDEX,RegWriteOutofIDEX,
+                     ReadData1In,ReadData2In,PCAddResultOutofIFID,signResultIn,rt,rd,
+                     ReadData1OutofIDEX,ReadData2OutofIDEX,PCAddResultOutofIDEX,signResultOutofIDEX,RTRegdestOutofIDEX,
+                     RDRegdestOutofIDEX);
 
-   Mux32Bit2To1 a6(WriteRegister, rt, rd, RegDst);  //$rd vs imm mux, uses regDst as signal
+  Mux32Bit2To1 a6(WriteRegister, RTRegdestOutofIDEX, RDRegdestOutofIDEX, RegDstOutofIDEX);  //$rd vs imm mux, uses regDst as signal
 
-  Mux32Bit2To1 a7(B, ReadData2, signResult, ALUSrc);  //Sign extend imm vs $rt (Read data 2), uses ALUSrc as signal, outputs the B input to ALU
+  Mux32Bit2To1 a7(BottomALUInput, ReadData2OutofIDEX, signResultOutofIDEX, ALUSrcOutofIDEX);  //Sign extend imm vs $rt (Read data 2), uses ALUSrc as signal, outputs the B input to ALU
   
-  Adder a8(PCAddResult, immSL2, instructionSig); //Adds PC instruction+4 (Output of PCADDER) and Imm*4 (Shift left 2 module) together, sending to PC mu
-   
-  immSL2 a12(signResult,immSL2); //Multiplies in by 4
+  Adder a8(PCAddResultOutofIDEX, immSL2, PCAddResultIn); //Adds PC instruction+4 (Output of PCADDER) and Imm*4 (Shift left 2 module) together, sending to PC mu
+  //PCAddResultIn goes into register 
+
   
-  ALU32Bit a11(ALUControl, ReadData1, B, ALUResult, Zero);
+  immSL2 a12(signResultOutofIDEX,immSL2); //Multiplies in by 4
+  
+  ALU32Bit a11(ALUopOutofIDEX, ReadData1OutofIDEX, BottomALUInput, ALUResult, ZeroIn);
   
   //THIRD STAGE REGISTER Execute->Memory
-  EX_MEM a15(AddResultOutofIF/ID, PCAddResultOut, ALUResultIn, ALUResultOut, MuxIn, MuxOut, ReadData2OutofID/ED, ReadData2Out, ZeroIn, ZeroOut,
-              MemWriteIn, MemWriteOut, MemReadIn, MemReadOut, BranchIn, BranchOut, MemtoRegIn, MemtoRegOut, RegWriteIn, RegWriteOut, Clk);
+  EX_MEM a15(PCAddResultIn, PCAddResultOutofEXMEM,ALUResult , ALUResultOutofEXMEM, MuxIn, MuxOutofEXMEM, ReadData2OutofIDED, ReadData2OutofEXMEM, ZeroIn, ZeroOut,
+              MemWriteOutofIDEX, MemWriteOutofEXMEM, MemReadOutofIDEX, MemReadOutofEXMEM, BranchOutofIDEX, BranchOutofEXMEM, MemtoRegIn, MemtoRegOutofEXMEM, RegWriteIn, RegWriteOutofEXMEM, Clk);
 
-   DataMemory a10(ALUResult, ReadData2, Clk, MemWrite, MemRead, ReadData); //Should be good
+   DataMemory a10(ALUResultOutofEXMEM, ReadData2OutofEXMEM, Clk, MemWriteOutofEXMEM, MemReadOutofIDEX, ReadData); //Should be good
   
   //FOURTH STAGE REGISTER Memory->Write Back
-  MEM_WB a16(ReadDataIn, ReadDataOut, ALUResultIn, ALUResultOut, MemtoRegIn, MemtoRegOut, RegWriteIn, RegWriteOut, Clk);
+  MEM_WB a16(ReadData, ReadDataOutofMEMWB, ALUResultOutofEXMEM, ALUResultOutofMEMWB, MemtoRegOutofEXMEM, MemtoRegOutofMEMWB, RegWriteOutofEXMEM, RegWriteOutofMEMWB, Clk);
   
-   Mux32Bit2To1 a17(WriteData, ReadData, ALUResult, MemtoReg); //Takes ReadData vs ALUresult, controlled by MemtoReg
+   Mux32Bit2To1 a17(WriteData, ReadDataOutofMEMWB, ALUResultOutofEXMEM, MemtoRegOutofMEMWB); //Takes ReadData vs ALUresult, controlled by MemtoReg
 
-
- 
-
- x
 
   Mux32Bit2To1 a9(out, inA, inB, sel); //Chooses between PCaddResult and instructionSig (Output of Adder)
 
