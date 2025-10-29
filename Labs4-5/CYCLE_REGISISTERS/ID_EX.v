@@ -4,8 +4,8 @@
 module RegisterID_EX(ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOut,ALUopOut,RegDstOut,BranchIn,MemWriteIn,MemReadIn,
                      BranchOut,MemWriteOut,MemReadOut,MemToRegIn,RegWriteIn,MemToRegOut,RegWriteOut,
                      ReadData1In,ReadData2In,PCAddResultIn,signResultIn,RTRegdestIn,RDRegdestIn,
-                     ReadData1Out,ReadData2Out,PCAddResultOut,signResultOut,RTRegdestIn,
-                     RDRegdestIn);
+                     ReadData1Out,ReadData2Out,PCAddResultOut,signResultOut,RTRegdestOut,
+                     RDRegdestOut);
 
 input Clk;
 //EX Variables
