@@ -22,7 +22,7 @@ module toplevel(instructionRead,Clk,instructionWrite);
   PCAdder a4(instructionRead, PCAddResult); //Takes instruction number and adds 4
 
   //FIRST STAGE REGISTER Fetch->Decode
-  IF_ID a13(PCAddResult,instruction,PCAddResultOutofIFID,instructionReadOut,Clk);
+  IF_ID a13(PCAddResult,Instruction,PCAddResultOutofIFID,instructionReadOut,Clk);
 
     //All "in"-suffix ports feed into ID/EX register
   controller a2(instructionReadOut, Clk, ALUSrcIn, RegDstIn, OPCodeIn, MemReadIn, MemWriteIn, MemtoRegIn, RegWriteIn, BranchIn,Jump); //Check but should be good
