@@ -78,7 +78,7 @@ wire PCSrc;
   //For I-type instructions
 // assign imm = instructionRead [15:0];
   
-  assign imm = instructionRead [15:0];
+  assign imm = instructionReadOut [15:0];
     
   Mux32Bit2To1 a19(NextPC, PCAddResult, MuxOutofEXMEM, PCSrc); //Mux to select between PC+4 and Branch
   
@@ -105,8 +105,10 @@ RegisterID_EX a14(Clk,ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOutofIDEX,ALUopOutofIDEX,R
                      ReadData1OutofIDEX,ReadData2OutofIDEX,PCAddResultOutofIDEX,signResultOutofIDEX,RTRegdestOutofIDEX,
                      RDRegdestOutofIDEX);
 
-  Mux32Bit2To1 a6(WriteRegister, RTRegdestOutofIDEX, RDRegdestOutofIDEX, RegDstOutofIDEX);  //$rd vs imm mux, uses regDst as signal
+  //Mux32Bit2To1 a6(WriteRegister, RTRegdestOutofIDEX, RDRegdestOutofIDEX, RegDstOutofIDEX);  //$rd vs imm mux, uses regDst as signal
+   MuxN2To1 #(5) a6(WriteRegister, RTRegdestOutofIDEX, RDRegdestOutofIDEX, RegDstOutofIDEX);
 
+  
   Mux32Bit2To1 a7(BottomALUInput, ReadData2OutofIDEX, signResultOutofIDEX, ALUSrcOutofIDEX);  //Sign extend imm vs $rt (Read data 2), uses ALUSrc as signal, outputs the B input to ALU
   
   Adder a8(PCAddResultOutofIDEX, immSL2, PCAddResultIn); //Adds PC instruction+4 (Output of PCADDER) and Imm*4 (Shift left 2 module) together, sending to PC mu
@@ -120,14 +122,14 @@ RegisterID_EX a14(Clk,ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOutofIDEX,ALUopOutofIDEX,R
   //THIRD STAGE REGISTER Execute->Memory
   EX_MEM a15(PCAddResultIn, PCAddResultOutofEXMEM,ALUResult , ALUResultOutofEXMEM, MuxIn, MuxOutofEXMEM, ReadData2OutofIDEX, ReadData2OutofEXMEM, ZeroIn, ZeroOut,MemWriteOutofIDEX, MemWriteOutofEXMEM, MemReadOutofIDEX, MemReadOutofEXMEM, BranchOutofIDEX, BranchOutofEXMEM, MemtoRegIn, MemtoRegOutofEXMEM, RegWriteIn, RegWriteOutofEXMEM, Clk);
 
-   DataMemory a10(ALUResultOutofEXMEM, ReadData2OutofEXMEM, Clk, MemWriteOutofEXMEM, MemReadOutofIDEX, ReadData); //Should be good
+   DataMemory a10(ALUResultOutofEXMEM, ReadData2OutofEXMEM, Clk, MemWriteOutofEXMEM, MemReadOutofEXMEM, ReadData); //Should be good
   
   AND a18(BranchOutofEXMEM, ZeroOut, PCSrc);
   
   //FOURTH STAGE REGISTER Memory->Write Back
   MEM_WB a16(ReadData, ReadDataOutofMEMWB, ALUResultOutofEXMEM, ALUResultOutofMEMWB, MemtoRegOutofEXMEM, MemtoRegOutofMEMWB, RegWriteOutofEXMEM, RegWriteOutofMEMWB, Clk);
   
-   Mux32Bit2To1 a17(WriteData, ReadDataOutofMEMWB, ALUResultOutofEXMEM, MemtoRegOutofMEMWB); //Takes ReadData vs ALUresult, controlled by MemtoReg
+   Mux32Bit2To1 a17(WriteData, ReadDataOutofMEMWB, ALUResultOutofMEMWB, MemtoRegOutofMEMWB); //Takes ReadData vs ALUresult, controlled by MemtoReg
 
   Mux32Bit2To1 a9(InstructionWrite, PCAddResult, PCAddResultOutofEXMEM, PCSrc); //Chooses between PCaddResult and instructionSig (Output of Adder)
 
