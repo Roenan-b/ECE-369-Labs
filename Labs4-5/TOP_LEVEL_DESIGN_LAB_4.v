@@ -15,7 +15,7 @@ module toplevel(instructionRead,Clk,instructionWrite);
   //For I-type instructions
 // assign imm = instructionRead [15:0];
   
-  assign imm = instructionRead [15:0];
+  assign imm = instructionReadOut [15:0];
 
   InstructionMemory a1(instructionRead, Instruction);  //NEED TO FIX THIS MODULES INTERNALS
   
