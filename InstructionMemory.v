@@ -41,15 +41,14 @@ module InstructionMemory(Address, Instruction);
     input [31:0] Address;                  // 32-bit input address coming from the Program Counter (PC)
     integer i;                             // Loop iterator used for initializing memory
     output reg [31:0] Instruction;         // 32-bit instruction output from the memory
-    reg [31:0] memory [127:0];             // Instruction memory: 128 words, each 32 bits wide
+    reg [31:0] memory [1023:0];             // Instruction memory: 128 words, each 32 bits wide
     
     // Initial block runs once at simulation start
     initial begin
         // Fill memory with simple test values (each location = index * 3)
         // This mimics "hard-coded" machine instructions for testing
-        for (i = 0; i < 32; i = i + 1) begin
-            memory[i] = i * 3;
-        end
+        
+        $readmemh("instruction_memory.mem", memory);
     end
 
     // Always block triggers whenever Address changes
@@ -57,7 +56,7 @@ module InstructionMemory(Address, Instruction);
         // Use bits [8:2] of Address as the word index:
         // - Instructions are word-aligned (32-bit = 4 bytes)
         // - Ignore bits [1:0] since they represent byte offsets
-        // - Bits [8:2] provide a 7-bit index (0–127) into memory
+        // - Bits [8:2] provide a 7-bit index (0â€“127) into memory
         Instruction = memory[Address[8:2]];
     end
 endmodule
