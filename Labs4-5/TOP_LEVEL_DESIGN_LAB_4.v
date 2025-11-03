@@ -29,7 +29,7 @@ module toplevel(instructionRead,Clk,instructionWrite);
 
   SignExtension a3(imm, signResultIn); //signResultIn goes to ID/EX reg
 
-  RegisterFile a5(rs, rt, WriteRegister, WriteData, RegWrite, Clk, ReadData1In, ReadData2In); //Should be good
+  RegisterFile a5(rs, rt, WriteRegister, WriteData, RegWriteOutofMEMWB, Clk, ReadData1In, ReadData2In); //Should be good
   
 
   
