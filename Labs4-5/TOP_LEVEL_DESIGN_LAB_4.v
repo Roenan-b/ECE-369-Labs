@@ -53,7 +53,7 @@ RegisterID_EX a14(ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOutofIDEX,ALUopOutofIDEX,RegDs
   ALU32Bit a11(ALUopOutofIDEX, ReadData1OutofIDEX, BottomALUInput, ALUResult, ZeroIn);
   
   //THIRD STAGE REGISTER Execute->Memory
-  EX_MEM a15(PCAddResultIn, PCAddResultOutofEXMEM,ALUResult , ALUResultOutofEXMEM, MuxIn, MuxOutofEXMEM, ReadData2OutofIDED, ReadData2OutofEXMEM, ZeroIn, ZeroOut,
+  EX_MEM a15(PCAddResultIn, PCAddResultOutofEXMEM,ALUResult , ALUResultOutofEXMEM, MuxIn, MuxOutofEXMEM, ReadData2OutofIDEX, ReadData2OutofEXMEM, ZeroIn, ZeroOut,
               MemWriteOutofIDEX, MemWriteOutofEXMEM, MemReadOutofIDEX, MemReadOutofEXMEM, BranchOutofIDEX, BranchOutofEXMEM, MemtoRegIn, MemtoRegOutofEXMEM, RegWriteIn, RegWriteOutofEXMEM, Clk);
 
    DataMemory a10(ALUResultOutofEXMEM, ReadData2OutofEXMEM, Clk, MemWriteOutofEXMEM, MemReadOutofIDEX, ReadData); //Should be good
