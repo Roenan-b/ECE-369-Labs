@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 
-module RegisterID_EX(ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOut,ALUopOut,RegDstOut,BranchIn,MemWriteIn,MemReadIn,
+module RegisterID_EX(Clk,ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOut,ALUopOut,RegDstOut,BranchIn,MemWriteIn,MemReadIn,
                      BranchOut,MemWriteOut,MemReadOut,MemToRegIn,RegWriteIn,MemToRegOut,RegWriteOut,
                      ReadData1In,ReadData2In,PCAddResultIn,signResultIn,RTRegdestIn,RDRegdestIn,
                      ReadData1Out,ReadData2Out,PCAddResultOut,signResultOut,RTRegdestOut,
@@ -61,7 +61,7 @@ output reg MemReadOut;
     //Mem
     BranchOut <= BranchIn;
     MemWriteOut <= MemWriteIn;
-    MemReadOut <= MemReadOut;
+    MemReadOut <= MemReadIN;
     //WB
     MemToRegOut <= MemToRegIn;
     RegWriteOut <= RegWriteIn;
