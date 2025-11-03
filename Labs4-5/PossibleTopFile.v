@@ -129,7 +129,7 @@ RegisterID_EX a14(Clk,ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOutofIDEX,ALUopOutofIDEX,R
   
    Mux32Bit2To1 a17(WriteData, ReadDataOutofMEMWB, ALUResultOutofEXMEM, MemtoRegOutofMEMWB); //Takes ReadData vs ALUresult, controlled by MemtoReg
 
-  Mux32Bit2To1 a9(out, inA, inB, sel); //Chooses between PCaddResult and instructionSig (Output of Adder)
+  Mux32Bit2To1 a9(InstructionWrite, PCAddResult, PCAddResultOutofEXMEM, PCSrc); //Chooses between PCaddResult and instructionSig (Output of Adder)
 
   assign instructionWrite = WriteData;
   
