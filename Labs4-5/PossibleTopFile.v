@@ -14,7 +14,7 @@ wire [5:0]  funct;
 wire [15:0] imm;
 
 // Between stages
-wire [31:0] instruction;              // output of InstructionMemory
+//wire [31:0] instruction;              // output of InstructionMemory
 wire [31:0] instructionReadOut;       // output of IF/ID
 wire [31:0] Instruction;              // from InstructionMemory (alias)
 wire [31:0] PCAddResult;              // from PCAdder
@@ -48,7 +48,7 @@ wire ZeroIn;
 wire [31:0] PCAddResultOutofEXMEM;
 wire [31:0] ALUResultOutofEXMEM;
 wire [31:0] MuxIn, MuxOutofEXMEM;
-wire [31:0] ReadData2OutofIDED, ReadData2OutofEXMEM;
+wire [31:0] ReadData2OutofEXMEM;
 wire ZeroOut;
 wire MemWriteOutofEXMEM, MemReadOutofEXMEM, BranchOutofEXMEM, MemtoRegOutofEXMEM, RegWriteOutofEXMEM;
 
@@ -99,7 +99,7 @@ wire PCSrc;
 
   
   //SECOND STAGE REGISTER Decode->Execute
-RegisterID_EX a14(Clk,ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOutofIDEX,ALUopOutofIDEX,RegDstOutofIDEX,BranchIn,MemWriteIn,MemReadIn,
+RegisterID_EX a14(Clk,ALUSrcIn,OPCodeIn,RegDstIn,ALUSrcOutofIDEX,ALUopOutofIDEX,RegDstOutofIDEX,BranchIn,MemWriteIn,MemReadIn,
                      BranchOutofIDEX,MemWriteOutofIDEX,MemReadOutofIDEX,MemToRegIn,RegWriteIn,MemToRegOutofIDEX,RegWriteOutofIDEX,
                      ReadData1In,ReadData2In,PCAddResultOutofIFID,signResultIn,rt,rd,
                      ReadData1OutofIDEX,ReadData2OutofIDEX,PCAddResultOutofIDEX,signResultOutofIDEX,RTRegdestOutofIDEX,
