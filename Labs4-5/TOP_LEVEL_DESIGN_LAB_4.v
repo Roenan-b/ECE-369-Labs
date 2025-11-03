@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module toplevel(instructionRead,CLk,instructionWrite);
+module toplevel(instructionRead,Clk,instructionWrite);
   input [31:0] instructionRead;
   input Clk;
   output [31:0] instructionWrite;
