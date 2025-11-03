@@ -124,8 +124,8 @@ RegisterID_EX a14(Clk,ALUSrcIn,OPCodeIn,RegDstIn,ALUSrcOutofIDEX,ALUopOutofIDEX,
 
    DataMemory a10(ALUResultOutofEXMEM, ReadData2OutofEXMEM, Clk, MemWriteOutofEXMEM, MemReadOutofEXMEM, ReadData); //Should be good
   
-  AND a18(BranchOutofEXMEM, ZeroOut, PCSrc);
-  
+ // AND a18(BranchOutofEXMEM, ZeroOut, PCSrc);
+  and a18(PCSrc, BranchOutofEXMEM, ZeroOut);
   //FOURTH STAGE REGISTER Memory->Write Back
   MEM_WB a16(ReadData, ReadDataOutofMEMWB, ALUResultOutofEXMEM, ALUResultOutofMEMWB, MemtoRegOutofEXMEM, MemtoRegOutofMEMWB, RegWriteOutofEXMEM, RegWriteOutofMEMWB, Clk);
   
