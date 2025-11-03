@@ -94,7 +94,7 @@ wire PCSrc;
 
   SignExtension a3(imm, signResultIn); //signResultIn goes to ID/EX reg
 
-  RegisterFile a5(rs, rt, WriteRegister, WriteData, RegWrite, Clk, ReadData1In, ReadData2In); //Should be good
+  RegisterFile a5(rs, rt, WriteRegister, WriteData, RegWriteOutofMEMWB, Clk, ReadData1In, ReadData2In); //Should be good
   
 
   
@@ -118,7 +118,7 @@ RegisterID_EX a14(Clk,ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOutofIDEX,ALUopOutofIDEX,R
   ALU32Bit a11(ALUopOutofIDEX, ReadData1OutofIDEX, BottomALUInput, ALUResult, ZeroIn);
   
   //THIRD STAGE REGISTER Execute->Memory
-  EX_MEM a15(PCAddResultIn, PCAddResultOutofEXMEM,ALUResult , ALUResultOutofEXMEM, MuxIn, MuxOutofEXMEM, ReadData2OutofIDED, ReadData2OutofEXMEM, ZeroIn, ZeroOut,MemWriteOutofIDEX, MemWriteOutofEXMEM, MemReadOutofIDEX, MemReadOutofEXMEM, BranchOutofIDEX, BranchOutofEXMEM, MemtoRegIn, MemtoRegOutofEXMEM, RegWriteIn, RegWriteOutofEXMEM, Clk);
+  EX_MEM a15(PCAddResultIn, PCAddResultOutofEXMEM,ALUResult , ALUResultOutofEXMEM, MuxIn, MuxOutofEXMEM, ReadData2OutofIDEX, ReadData2OutofEXMEM, ZeroIn, ZeroOut,MemWriteOutofIDEX, MemWriteOutofEXMEM, MemReadOutofIDEX, MemReadOutofEXMEM, BranchOutofIDEX, BranchOutofEXMEM, MemtoRegIn, MemtoRegOutofEXMEM, RegWriteIn, RegWriteOutofEXMEM, Clk);
 
    DataMemory a10(ALUResultOutofEXMEM, ReadData2OutofEXMEM, Clk, MemWriteOutofEXMEM, MemReadOutofIDEX, ReadData); //Should be good
   
