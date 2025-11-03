@@ -23,7 +23,7 @@ wire [31:0] PCAddResultOutofIFID;     // output of IF/ID
 // Controller signals
 wire ALUSrcIn, RegDstIn, MemReadIn, MemWriteIn, MemtoRegIn, RegWriteIn;
 wire BranchIn, Jump;
-wire [3:0] OPCodeIn;
+  wire [5:0] OPCodeIn;
 
 // Sign extension
 wire [31:0] signResultIn;
@@ -87,7 +87,7 @@ wire PCSrc;
   PCAdder a4(instructionRead, PCAddResult); //Takes instruction number and adds 4
 
   //FIRST STAGE REGISTER Fetch->Decode
-  RegisterIF_ID a13(PCAddResult,instruction,PCAddResultOutofIFID,instructionReadOut,Clk);
+  RegisterIF_ID a13(PCAddResult,Instruction,PCAddResultOutofIFID,instructionReadOut,Clk);
 
     //All "in"-suffix ports feed into ID/EX register
   controller a2(instructionReadOut, Clk, ALUSrcIn, RegDstIn, OPCodeIn, MemReadIn, MemWriteIn, MemtoRegIn, RegWriteIn, BranchIn,Jump); //Check but should be good
