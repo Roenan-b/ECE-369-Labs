@@ -1,0 +1,61 @@
+wire [5:0]  opCode;
+wire [4:0]  rs;
+wire [4:0]  rt;
+wire [4:0]  rd;
+wire [4:0]  shamt;
+wire [5:0]  funct;
+wire [15:0] imm;
+
+// Between stages
+wire [31:0] instruction;              // output of InstructionMemory
+wire [31:0] instructionReadOut;       // output of IF/ID
+wire [31:0] Instruction;              // from InstructionMemory (alias)
+wire [31:0] PCAddResult;              // from PCAdder
+wire [31:0] PCAddResultOutofIFID;     // output of IF/ID
+
+// Controller signals
+wire ALUSrcIn, RegDstIn, MemReadIn, MemWriteIn, MemtoRegIn, RegWriteIn;
+wire BranchIn, Jump;
+wire [3:0] OPCodeIn;
+
+// Sign extension
+wire [31:0] signResultIn;
+
+// RegisterFile connections
+wire [31:0] ReadData1In, ReadData2In;
+
+// ID/EX register outputs
+wire ALUSrcOutofIDEX, RegDstOutofIDEX, BranchOutofIDEX, MemWriteOutofIDEX, MemReadOutofIDEX;
+wire MemToRegOutofIDEX, RegWriteOutofIDEX;
+wire [3:0] ALUopOutofIDEX;
+wire [31:0] ReadData1OutofIDEX, ReadData2OutofIDEX, PCAddResultOutofIDEX, signResultOutofIDEX;
+wire [4:0] RTRegdestOutofIDEX, RDRegdestOutofIDEX;
+
+// Execute stage
+wire [31:0] BottomALUInput;
+wire [31:0] immSL2;
+wire [31:0] ALUResult;
+wire ZeroIn;
+
+// EX/MEM register outputs
+wire [31:0] PCAddResultOutofEXMEM;
+wire [31:0] ALUResultOutofEXMEM;
+wire [31:0] MuxIn, MuxOutofEXMEM;
+wire [31:0] ReadData2OutofIDED, ReadData2OutofEXMEM;
+wire ZeroOut;
+wire MemWriteOutofEXMEM, MemReadOutofEXMEM, BranchOutofEXMEM, MemtoRegOutofEXMEM, RegWriteOutofEXMEM;
+
+// Data Memory
+wire [31:0] ReadData;
+
+// MEM/WB register outputs
+wire [31:0] ReadDataOutofMEMWB, ALUResultOutofMEMWB;
+wire MemtoRegOutofMEMWB, RegWriteOutofMEMWB;
+
+// Writeback
+wire [31:0] WriteData;
+wire [4:0] WriteRegister;
+
+// PC / branch MUX
+wire [31:0] out, inA, inB;
+wire sel;
