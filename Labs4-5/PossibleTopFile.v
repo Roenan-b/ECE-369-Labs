@@ -106,7 +106,7 @@ RegisterID_EX a14(Clk,ALUSrcIn,OPCodeIn,RegDstIn,ALUSrcOutofIDEX,ALUopOutofIDEX,
                      RDRegdestOutofIDEX);
 
   //Mux32Bit2To1 a6(WriteRegister, RTRegdestOutofIDEX, RDRegdestOutofIDEX, RegDstOutofIDEX);  //$rd vs imm mux, uses regDst as signal
-   MuxN2To1 #(5) a6(WriteRegister, RTRegdestOutofIDEX, RDRegdestOutofIDEX, RegDstOutofIDEX);
+   Mux32Bit2To1 a6(WriteRegister, RTRegdestOutofIDEX, RDRegdestOutofIDEX, RegDstOutofIDEX);
 
   
   Mux32Bit2To1 a7(BottomALUInput, ReadData2OutofIDEX, signResultOutofIDEX, ALUSrcOutofIDEX);  //Sign extend imm vs $rt (Read data 2), uses ALUSrc as signal, outputs the B input to ALU
