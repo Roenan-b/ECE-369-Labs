@@ -1,13 +1,14 @@
 `timescale 1ns / 1ps
 
 
-module RegisterID_EX(Clk,ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOut,ALUopOut,RegDstOut,BranchIn,MemWriteIn,MemReadIn,
+module RegisterID_EX(Clk,Reset, ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOut,ALUopOut,RegDstOut,BranchIn,MemWriteIn,MemReadIn,
                      BranchOut,MemWriteOut,MemReadOut,MemToRegIn,RegWriteIn,MemToRegOut,RegWriteOut,
                      ReadData1In,ReadData2In,PCAddResultIn,signResultIn,RTRegdestIn,RDRegdestIn,
                      ReadData1Out,ReadData2Out,PCAddResultOut,signResultOut,RTRegdestOut,
                      RDRegdestOut);
 
 input Clk;
+input Reset;
 //EX Variables
 input ALUSrcIn;
 input [5:0] ALUopIn;
@@ -33,8 +34,8 @@ output reg MemReadOut;
   output reg RegWriteOut;
   
 //DataVariables for EX Stage
-  input [4:0] ReadData1In;
-  input [4:0] ReadData2In;
+  input [31:0] ReadData1In;
+  input [31:0] ReadData2In;
   
   input [31:0] PCAddResultIn;
   input [31:0] signResultIn; //SIGN EXTEND OUTPUT
@@ -54,6 +55,17 @@ output reg MemReadOut;
 
   //Register Logic
   always @(posedge Clk) begin
+    if (Reset) begin
+    ALUSrcOut <= 1'b0;
+    ALUopOut <= 4'b0000;
+    RegDstOut <= 1'b0;
+    BranchOut <= 1'b0;
+    MemWriteOut <= 1'b0;
+    MemReadOut <= 1'b0;
+    MemToRegOut <= 1'b0;
+    RegWriteOut <= 1'b0;
+  end else begin
+  
     //EX
     ALUSrcOut <= ALUSrcIn;
     ALUopOut <= ALUopIn;
@@ -61,7 +73,7 @@ output reg MemReadOut;
     //Mem
     BranchOut <= BranchIn;
     MemWriteOut <= MemWriteIn;
-    MemReadOut <= MemReadIN;
+    MemReadOut <= MemReadIn;
     //WB
     MemToRegOut <= MemToRegIn;
     RegWriteOut <= RegWriteIn;
@@ -75,7 +87,7 @@ output reg MemReadOut;
     RTRegdestOut <= RTRegdestIn;
     RDRegdestOut <= RDRegdestIn;
 
-    
+    end
   end
        endmodule
                      
