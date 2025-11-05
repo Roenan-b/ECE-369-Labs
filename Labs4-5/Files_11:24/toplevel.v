@@ -283,7 +283,7 @@ module toplevel(
   // Writeback (2:1 mux; sel=1 -> ALU, sel=0 -> MEM)
   wire [31:0] WB_2to1;
   Mux32Bit2To1 a17(
-    .out(WriteData),
+    .out(WB_2to1),
     .inA(ReadDataOutofMEMWB),
     .inB(ALUResultOutofMEMWB),
     .sel(MemtoRegOutofMEMWB)
@@ -304,8 +304,7 @@ assign JumpTarget = {PCAddResultOutofIFID[31:28], instructionReadOut[25:0], 2'b0
 wire [31:0] PCBranchOrSeq = PCSrc ? PCAddResultOutofEXMEM : IF_PCPlus4;
 
 // Final PC priority: JR > J > Branch > Sequential
-assign PCNext = JumpReg ? ReadData1In :
-                (Jump ? JumpTarget : PCBranchOrSeq);
+  assign PCNext = Jump ? {PCAddResultOutofIFID[31:28], instructionReadOut[25:0], 2'b00} : PCBranchOrSeq;
 
   
 
