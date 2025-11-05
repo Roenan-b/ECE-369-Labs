@@ -1,21 +1,25 @@
+
+//Percent Effort
+// Roes: 33% Evan: 33% Noah: 33%
+
 `timescale 1ns / 1ps
 
 module toplevel(
   input         Clk,
   input         Reset,
- /* output [31:0] instructionWrite,
+  output [31:0] instructionWrite,
   output [31:0] PC_out, 
   output        WB_RegWrite,      // write-enable at WB
   output [4:0]  WB_WriteReg,      // Register index being written
-  output [31:0] WB_WriteData, */
-  output [6:0] out7,
-  output [7:0] en_out 
+  output [31:0] WB_WriteData 
+ /* output [6:0] out7,
+  output [7:0] en_out */
 );
 
-wire ClkOut;
+//wire ClkOut;
 
-ClkDiv a20(Clk, Reset, ClkOut);   
-Two4DigitDisplay a19(ClkOut, PC_out, WB_WriteData, out7, en_out);
+//ClkDiv a20(Clk, Reset, ClkOut);   
+//Two4DigitDisplay a19(Clk, PC_out, WB_WriteData, out7, en_out);
   // =========================
   // IF stage via IFU (Option A)
   // =========================
@@ -30,7 +34,7 @@ Two4DigitDisplay a19(ClkOut, PC_out, WB_WriteData, out7, en_out);
     .PCPlus4   (IF_PCPlus4),
     .PCNext    (PCNext),
     .Reset     (Reset),
-    .Clk       (ClkOut)
+    .Clk       (Clk)
   );
 
   assign PC_out = IF_PC;
@@ -46,7 +50,7 @@ Two4DigitDisplay a19(ClkOut, PC_out, WB_WriteData, out7, en_out);
     .instructionReadIn (IF_Instruction),
     .PCAddResultOut    (PCAddResultOutofIFID),
     .instructionReadOut(instructionReadOut),
-    .Clk               (ClkOut),
+    .Clk               (Clk),
     .Reset             (Reset)
   );
 
@@ -82,7 +86,7 @@ Two4DigitDisplay a19(ClkOut, PC_out, WB_WriteData, out7, en_out);
 
   controller a2(
     .instruction(instructionReadOut),
-    .Clk(ClkOut),
+    .Clk(Clk),
     .ALUSrc(ALUSrcIn),
     .RegDstSel(RegDstSel_bus),     // keep controller's name
     .ALUControl(OPCodeIn),
@@ -110,7 +114,7 @@ Two4DigitDisplay a19(ClkOut, PC_out, WB_WriteData, out7, en_out);
     .WriteRegister(WriteReg_MEMWB),       // will be the MEM/WB version (see below)
     .WriteData(WriteData),
     .RegWrite(RegWriteOutofMEMWB),
-    .Clk(ClkOut),
+    .Clk(Clk),
     .ReadData1(ReadData1In),
     .ReadData2(ReadData2In)
   );
@@ -128,7 +132,7 @@ Two4DigitDisplay a19(ClkOut, PC_out, WB_WriteData, out7, en_out);
   wire [4:0] shamtOutofIDEX;
 
   RegisterID_EX a14(
-    .Clk(ClkOut),
+    .Clk(Clk),
     .Reset(Reset),
     // control in/out
     .ALUSrcIn    (ALUSrcIn),
@@ -236,7 +240,7 @@ Two4DigitDisplay a19(ClkOut, PC_out, WB_WriteData, out7, en_out);
     .MemtoRegIn(MemToRegOutofIDEX), .MemtoRegOut(MemtoRegOutofEXMEM),
     .RegWriteIn(RegWriteOutofIDEX), .RegWriteOut(RegWriteOutofEXMEM),
 
-    .Clk(ClkOut),
+    .Clk(Clk),
     .Reset(Reset),
 
     // *** New 5-bit register index pipe (add these two ports in EX_MEM module)
@@ -252,7 +256,7 @@ Two4DigitDisplay a19(ClkOut, PC_out, WB_WriteData, out7, en_out);
   DataMemory a10(
     .Address  (ALUResultOutofEXMEM),
     .WriteData(ReadData2OutofEXMEM),
-    .Clk(ClkOut),
+    .Clk(Clk),
     .MemWrite (MemWriteOutofEXMEM),
     .MemRead  (MemReadOutofEXMEM),
     .ReadData (ReadData)
@@ -278,7 +282,7 @@ Two4DigitDisplay a19(ClkOut, PC_out, WB_WriteData, out7, en_out);
     .ALUResultIn(ALUResultOutofEXMEM),   .ALUResultOut(ALUResultOutofMEMWB),
     .MemtoRegIn (MemtoRegOutofEXMEM),    .MemtoRegOut (MemtoRegOutofMEMWB),
     .RegWriteIn (RegWriteOutofEXMEM),    .RegWriteOut (RegWriteOutofMEMWB),
-    .Clk(ClkOut),
+    .Clk(Clk),
     .Reset(Reset),
 
     // *** New 5-bit write-reg pipe (add these two ports in MEM_WB module)a
@@ -319,3 +323,5 @@ wire [31:0] PCBranchOrSeq = PCSrc ? PCAddResultOutofEXMEM : IF_PCPlus4;
   assign WB_RegWrite      = RegWriteOutofMEMWB;
   assign WB_WriteReg      = WriteRegister_wb_sel;
   assign WB_WriteData     = WriteData;
+
+endmodule
