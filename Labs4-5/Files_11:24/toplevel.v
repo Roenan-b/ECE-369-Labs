@@ -3,13 +3,19 @@
 module toplevel(
   input         Clk,
   input         Reset,
-  output [31:0] instructionWrite,
+ /* output [31:0] instructionWrite,
   output [31:0] PC_out, 
   output        WB_RegWrite,      // write-enable at WB
   output [4:0]  WB_WriteReg,      // Register index being written
-  output [31:0] WB_WriteData
+  output [31:0] WB_WriteData, */
+  output [6:0] out7,
+  output [7:0] en_out 
 );
 
+wire ClkOut;
+
+ClkDiv a20(Clk, Reset, ClkOut);   
+Two4DigitDisplay a19(ClkOut, PC_out, WB_WriteData, out7, en_out);
   // =========================
   // IF stage via IFU (Option A)
   // =========================
@@ -24,7 +30,7 @@ module toplevel(
     .PCPlus4   (IF_PCPlus4),
     .PCNext    (PCNext),
     .Reset     (Reset),
-    .Clk       (Clk)
+    .Clk       (ClkOut)
   );
 
   assign PC_out = IF_PC;
@@ -40,7 +46,7 @@ module toplevel(
     .instructionReadIn (IF_Instruction),
     .PCAddResultOut    (PCAddResultOutofIFID),
     .instructionReadOut(instructionReadOut),
-    .Clk               (Clk),
+    .Clk               (ClkOut),
     .Reset             (Reset)
   );
 
@@ -76,7 +82,7 @@ module toplevel(
 
   controller a2(
     .instruction(instructionReadOut),
-    .Clk(Clk),
+    .Clk(ClkOut),
     .ALUSrc(ALUSrcIn),
     .RegDstSel(RegDstSel_bus),     // keep controller's name
     .ALUControl(OPCodeIn),
@@ -104,7 +110,7 @@ module toplevel(
     .WriteRegister(WriteReg_MEMWB),       // will be the MEM/WB version (see below)
     .WriteData(WriteData),
     .RegWrite(RegWriteOutofMEMWB),
-    .Clk(Clk),
+    .Clk(ClkOut),
     .ReadData1(ReadData1In),
     .ReadData2(ReadData2In)
   );
@@ -122,7 +128,7 @@ module toplevel(
   wire [4:0] shamtOutofIDEX;
 
   RegisterID_EX a14(
-    .Clk(Clk),
+    .Clk(ClkOut),
     .Reset(Reset),
     // control in/out
     .ALUSrcIn    (ALUSrcIn),
@@ -230,7 +236,7 @@ module toplevel(
     .MemtoRegIn(MemToRegOutofIDEX), .MemtoRegOut(MemtoRegOutofEXMEM),
     .RegWriteIn(RegWriteOutofIDEX), .RegWriteOut(RegWriteOutofEXMEM),
 
-    .Clk(Clk),
+    .Clk(ClkOut),
     .Reset(Reset),
 
     // *** New 5-bit register index pipe (add these two ports in EX_MEM module)
@@ -246,7 +252,7 @@ module toplevel(
   DataMemory a10(
     .Address  (ALUResultOutofEXMEM),
     .WriteData(ReadData2OutofEXMEM),
-    .Clk(Clk),
+    .Clk(ClkOut),
     .MemWrite (MemWriteOutofEXMEM),
     .MemRead  (MemReadOutofEXMEM),
     .ReadData (ReadData)
@@ -272,7 +278,7 @@ module toplevel(
     .ALUResultIn(ALUResultOutofEXMEM),   .ALUResultOut(ALUResultOutofMEMWB),
     .MemtoRegIn (MemtoRegOutofEXMEM),    .MemtoRegOut (MemtoRegOutofMEMWB),
     .RegWriteIn (RegWriteOutofEXMEM),    .RegWriteOut (RegWriteOutofMEMWB),
-    .Clk(Clk),
+    .Clk(ClkOut),
     .Reset(Reset),
 
     // *** New 5-bit write-reg pipe (add these two ports in MEM_WB module)a
@@ -283,7 +289,7 @@ module toplevel(
   // Writeback (2:1 mux; sel=1 -> ALU, sel=0 -> MEM)
   wire [31:0] WB_2to1;
   Mux32Bit2To1 a17(
-    .out(WB_2to1),
+    .out(WriteData),
     .inA(ReadDataOutofMEMWB),
     .inB(ALUResultOutofMEMWB),
     .sel(MemtoRegOutofMEMWB)
@@ -304,7 +310,7 @@ assign JumpTarget = {PCAddResultOutofIFID[31:28], instructionReadOut[25:0], 2'b0
 wire [31:0] PCBranchOrSeq = PCSrc ? PCAddResultOutofEXMEM : IF_PCPlus4;
 
 // Final PC priority: JR > J > Branch > Sequential
-  assign PCNext = Jump ? {PCAddResultOutofIFID[31:28], instructionReadOut[25:0], 2'b00} : PCBranchOrSeq;
+  assign PCNext = JumpReg ? ReadData1In : (Jump ? JumpTarget : PCBranchOrSeq);
 
   
 
@@ -313,6 +319,3 @@ wire [31:0] PCBranchOrSeq = PCSrc ? PCAddResultOutofEXMEM : IF_PCPlus4;
   assign WB_RegWrite      = RegWriteOutofMEMWB;
   assign WB_WriteReg      = WriteRegister_wb_sel;
   assign WB_WriteData     = WriteData;
-    
-
-endmodule
