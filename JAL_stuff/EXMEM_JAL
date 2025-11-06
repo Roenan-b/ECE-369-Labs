@@ -16,7 +16,7 @@ PCAddResultIn,PCAddResultOut);
   input MemWriteIn;
   input MemReadIn;
   input BranchIn;
-  input MemtoRegIn;
+  input [1:0] MemtoRegIn;
   input RegWriteIn;
   input [4:0] WriteRegIn;
   
@@ -31,7 +31,7 @@ PCAddResultIn,PCAddResultOut);
   output reg MemWriteOut;
   output reg MemReadOut;
   output reg BranchOut;
-  output reg MemtoRegOut;
+  output [1:0] reg MemtoRegOut;
   output reg RegWriteOut;
   output reg [4:0] WriteRegOut;
 
