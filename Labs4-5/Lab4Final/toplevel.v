@@ -260,11 +260,12 @@ end
   // *** Add a proper 5-bit write-reg pipe through EX/MEM
   wire [4:0] WriteReg_EXMEM;
   wire [31:0] PCResultOutofEXMEM = PCAddResultOutofEXMEM;
+  wire [31:0] BranchTargetOutofEXMEM;
 
   EX_MEM a15(
     // branch target
     .AddResultIn (BranchTargetIn_EX),
-    .AddResultOut(PCAddResultOutofEXMEM),
+    .AddResultOut(BranchTargetOutofEXMEM),
 
     .ALUResultIn(ALUResult), .ALUResultOut(ALUResultOutofEXMEM),
 
@@ -297,11 +298,6 @@ end
 
   );
 
-always @(posedge Clk) begin
-  $display("[%0t] EXMEM: MemWrite=%b MemRead=%b MemSize=%b ALUAddr=%h StoreData=%h",
-           $time, MemWriteOutofEXMEM, MemReadOutofEXMEM, MemSizeOutofEXMEM,
-           ALUResultOutofEXMEM, ReadData2OutofEXMEM);
-end
 
   // =========================
   // Data Memory
