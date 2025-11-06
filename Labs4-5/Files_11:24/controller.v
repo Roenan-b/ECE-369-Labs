@@ -82,6 +82,9 @@ module controller(
   localparam AC_BLEZ  = 6'd15;
   localparam AC_PASSA = 6'd16; // jr
   localparam AC_PASSB = 6'd17; // jal
+  
+  localparam OP_SPECIAL2 = 6'b011100; // MIPS32r2 SPECIAL2
+  localparam FUNCT_MUL_R2 = 6'b000010; // mul rd, rs, rt
 
   always @* begin
     // Defaults
@@ -204,6 +207,28 @@ module controller(
         WBSource = 2'b10;  // PC+4
         ALUControl = AC_PASSB;
       end
+      
+      OP_SPECIAL2: begin
+        // mul rd, rs, rt  (signed, low 32 to rd)
+        if (funct == FUNCT_MUL_R2) begin
+        ALUSrc     = 1'b0;          // rs,rt
+        RegDstSel  = 2'b01;         // rd
+        ALUControl = AC_MUL;        // your ALU case
+        MemRead    = 1'b0;
+        MemWrite   = 1'b0;
+        WBSource   = 2'b00;         // ALU
+        RegWrite   = 1'b1;          // write rd
+        Branch     = 1'b0;
+        Jump       = 1'b0;
+        JumpReg    = 1'b0;
+        UseShamt   = 1'b0;
+        ExtZero    = 1'b0;
+  end else begin
+    // Unknown SPECIAL2 funct
+    RegWrite = 1'b0;
+  end
+end
+
 
       default: begin
         // Unknown opcode
