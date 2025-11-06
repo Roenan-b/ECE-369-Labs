@@ -5,7 +5,7 @@ module RegisterID_EX(Clk,Reset, ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOut,ALUopOut,Reg
                      BranchOut,MemWriteOut,MemReadOut,MemtoRegIn,RegWriteIn,MemtoRegOut,RegWriteOut,
                      ReadData1In,ReadData2In,PCAddResultIn,signResultIn,RTRegdestIn,RDRegdestIn,
                      ReadData1Out,ReadData2Out,PCAddResultOut,signResultOut,RTRegdestOut,
-                     RDRegdestOut, UseShamtOut,UseShamtIn, shamtIn, shamtOut);
+                     RDRegdestOut, UseShamtOut,UseShamtIn, shamtIn, shamtOut, RegDstSelIn,RegDstSelOut );
 
 input Clk;
 input Reset;
@@ -18,7 +18,7 @@ input[4:0] shamtIn;
   
 output reg ALUSrcOut;
 output reg [5:0]ALUopOut;
-output [1:0] reg RegDstOut;
+output reg[1:0] RegDstOut;
 output reg UseShamtOut;
 output reg[4:0] shamtOut;
 
@@ -34,7 +34,7 @@ output reg MemReadOut;
 //WRITEBACK VARAIABLE
   input [1:0] MemtoRegIn;
   input RegWriteIn;
-  output [1:0] reg MemtoRegOut;
+  output reg [1:0] MemtoRegOut;
   output reg RegWriteOut;
   
 //DataVariables for EX Stage
@@ -56,6 +56,11 @@ output reg MemReadOut;
 
   output reg [4:0] RTRegdestOut;
   output reg [4:0] RDRegdestOut;
+  
+
+    input      [1:0] RegDstSelIn;
+    output reg [1:0] RegDstSelOut;
+
 
   //Register Logic
   always @(posedge Clk) begin
@@ -66,10 +71,11 @@ output reg MemReadOut;
     BranchOut <= 1'b0;
     MemWriteOut <= 1'b0;
     MemReadOut <= 1'b0;
-    MemtoRegOut <= 1'b0;
+    MemtoRegOut <= 2'b00;
     RegWriteOut <= 1'b0;
     UseShamtOut <= 1'b0;
     shamtOut    <= 5'b00000;
+    RegDstSelOut <= 2'b00;
   end else begin
   
     //EX
@@ -94,6 +100,8 @@ output reg MemReadOut;
 
     RTRegdestOut <= RTRegdestIn;
     RDRegdestOut <= RDRegdestIn;
+    
+    RegDstSelOut <= RegDstSelIn;
 
     end
   end
