@@ -7,12 +7,13 @@
 // Description - Performs signal multiplexing between 2 32-Bit words.
 ////////////////////////////////////////////////////////////////////////////////
 
-module 2x2_mux_for_JAL_RegDst(out, inA, inB,inC, sel);
+module mux3x1(out, inA, inB,inC, sel);
 
     output reg [31:0] out;
     
     input [31:0] inA;
     input [31:0] inB;
+    input [31:0] inC;
     input [1:0] sel;
 
     /* Fill in the implementation here ... */ 
@@ -25,7 +26,7 @@ module 2x2_mux_for_JAL_RegDst(out, inA, inB,inC, sel);
 	out <= inA;
     else if (sel ==2) out <=inC;
 else 
-    out <=inA
+    out <=inA;
     end
 
 endmodule
