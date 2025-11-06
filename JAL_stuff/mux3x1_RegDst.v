@@ -26,7 +26,9 @@ module mux3x1_RegDst(out, inA, inB, sel);
 	out <= inB;
     else if (sel == 0)
 	out <= inA;
-    else  out <=31;
+	else if(sel ==2) out <=31;
+		
+	else out <=inA;
     end
 
 endmodule
