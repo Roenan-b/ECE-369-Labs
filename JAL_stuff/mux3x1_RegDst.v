@@ -10,7 +10,7 @@
 // Description - Performs signal multiplexing between 2 32-Bit words.
 ////////////////////////////////////////////////////////////////////////////////
 
-module 2x2_mux_for_JAL_RegDst(out, inA, inB, sel);
+module mux3x1_RegDst(out, inA, inB, sel);
 
     output reg [31:0] out;
     
