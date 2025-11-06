@@ -9,7 +9,7 @@ PCResultOut);
   input [31:0] ReadDataIn;
   input [31:0] PCResultIn;
   //Controller Signals Inputs
-  input MemtoRegIn;
+  input [1:0] MemtoRegIn;
   input RegWriteIn;
   input[4:0] WriteRegIn;
 
@@ -17,7 +17,7 @@ PCResultOut);
   output reg [31:0] ReadDataOut;
   output reg [31:0] PCResultOut;
   //Controller Signals Outputs
-  output reg MemtoRegOut;
+  output [1:0] reg MemtoRegOut;
   output reg RegWriteOut;
   output reg [4:0] WriteRegOut;
   
