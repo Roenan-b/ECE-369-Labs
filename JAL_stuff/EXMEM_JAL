@@ -1,7 +1,8 @@
 `timescale 1ns / 1ps
 
 module EX_MEM(AddResultIn, AddResultOut, ALUResultIn, ALUResultOut, MuxIn, MuxOut, ReadData2In, ReadData2Out, ZeroIn, ZeroOut,
-              MemWriteIn, MemWriteOut, MemReadIn, MemReadOut, BranchIn, BranchOut, MemtoRegIn, MemtoRegOut, RegWriteIn, RegWriteOut, Clk, Reset, WriteRegOut, WriteRegIn);
+              MemWriteIn, MemWriteOut, MemReadIn, MemReadOut, BranchIn, BranchOut, MemtoRegIn, MemtoRegOut, RegWriteIn, RegWriteOut, Clk, Reset, WriteRegOut, WriteRegIn,
+PCAddResultIn,PCAddResultOut);
 
   input Clk;
   input Reset;
@@ -9,7 +10,7 @@ module EX_MEM(AddResultIn, AddResultOut, ALUResultIn, ALUResultOut, MuxIn, MuxOu
   input [31:0] ALUResultIn;
   input [4:0] MuxIn;
   input [31:0] ReadData2In;
-  input 
+  input [31:0] PCAddResultIn;
   //Controller Signals Inputs
   input ZeroIn;
   input MemWriteIn;
@@ -18,12 +19,13 @@ module EX_MEM(AddResultIn, AddResultOut, ALUResultIn, ALUResultOut, MuxIn, MuxOu
   input MemtoRegIn;
   input RegWriteIn;
   input [4:0] WriteRegIn;
+  
 
   output reg [31:0] AddResultOut;
   output reg [31:0] ALUResultOut;
   output reg [4:0] MuxOut;
   output reg [31:0] ReadData2Out;
-
+  output reg [31:0] PCAddResultOut;
   //Controller Signals Outputs
   output reg ZeroOut;
   output reg MemWriteOut;
@@ -54,6 +56,7 @@ module EX_MEM(AddResultIn, AddResultOut, ALUResultIn, ALUResultOut, MuxIn, MuxOu
     MemtoRegOut <= MemtoRegIn;
     RegWriteOut <= RegWriteIn;
     WriteRegOut <= WriteRegIn;
+    PCAddResultOut <= PCAddResultIn;
   end
   end
 endmodule
