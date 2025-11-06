@@ -123,7 +123,9 @@ module toplevel(
   // ID/EX pipeline register
   // =========================
   wire        ALUSrcOutofIDEX, RegDstOutofIDEX, BranchOutofIDEX;
-  wire        MemWriteOutofIDEX, MemReadOutofIDEX, MemToRegOutofIDEX, RegWriteOutofIDEX;
+  wire        MemWriteOutofIDEX, MemReadOutofIDEX;
+  wire        MemToRegOutofIDEX;
+  wire        RegWriteOutofIDEX;
   wire [5:0]  ALUopOutofIDEX;                 // *** was [3:0], must be [5:0]
   wire        UseShamtOutofIDEX;
   wire [31:0] ReadData1OutofIDEX, ReadData2OutofIDEX;
@@ -179,8 +181,12 @@ module toplevel(
   wire        ZeroIn;
 
   // 5-bit write-register selection in EX (rt vs rd), then PIPELINE it
-  wire [4:0] WriteReg_EX = RegDstOutofIDEX ? RDRegdestOutofIDEX : RTRegdestOutofIDEX;
-
+ mux3x1_RegDst mux_reg_dst (
+    .out(WriteReg_EX),
+    .inA(RTRegdestOutofIDEX),
+    .inB(RDRegdestOutofIDEX),
+    .sel(RegDstOutofIDEX)
+);
   // B-input mux to ALU: sel=1 -> immediate (signResultOutofIDEX), sel=0 -> ReadData2
   Mux32Bit2To1 mux_alu_b(
     .out (BottomALUInput),
@@ -214,7 +220,10 @@ module toplevel(
   wire [31:0] MuxOutofEXMEM;           // kept for compatibility (unused for WriteReg now)
   wire        ZeroOut;
   wire        MemWriteOutofEXMEM, MemReadOutofEXMEM;
-  wire        BranchOutofEXMEM, MemtoRegOutofEXMEM, RegWriteOutofEXMEM;
+  wire        BranchOutofEXMEM, RegWriteOutofEXMEM;
+  wire        MemtoRegOutofEXMEM;
+  wire [4:0]  WriteReg_EX;
+ 
 
   // *** Add a proper 5-bit write-reg pipe through EX/MEM
   wire [4:0] WriteReg_EXMEM;
@@ -239,6 +248,7 @@ module toplevel(
     .BranchIn  (BranchOutofIDEX),   .BranchOut  (BranchOutofEXMEM),
     .MemtoRegIn(MemToRegOutofIDEX), .MemtoRegOut(MemtoRegOutofEXMEM),
     .RegWriteIn(RegWriteOutofIDEX), .RegWriteOut(RegWriteOutofEXMEM),
+    .PCAddResultIn(PCAddResultOutofIDEX), .PCAddResultOut(PCAddResultOutofEXMEM),
 
     .Clk(Clk),
     .Reset(Reset),
@@ -276,12 +286,15 @@ module toplevel(
   
   wire MemtoRegOutofMEMWB;
   wire RegWriteOutofMEMWB;
+  wire [31:0] PCResultOutofEXMEM;
+  wire [31:0] PCResultOutofMEMWB;
 
   MEM_WB a16(
     .ReadDataIn (ReadData),              .ReadDataOut (ReadDataOutofMEMWB),
     .ALUResultIn(ALUResultOutofEXMEM),   .ALUResultOut(ALUResultOutofMEMWB),
     .MemtoRegIn (MemtoRegOutofEXMEM),    .MemtoRegOut (MemtoRegOutofMEMWB),
     .RegWriteIn (RegWriteOutofEXMEM),    .RegWriteOut (RegWriteOutofMEMWB),
+    .PCResultIn(PCResultOutofEXMEM), .PCResultOut(PCResultOutofMEMWB),
     .Clk(Clk),
     .Reset(Reset),
 
@@ -292,10 +305,11 @@ module toplevel(
 
   // Writeback (2:1 mux; sel=1 -> ALU, sel=0 -> MEM)
   wire [31:0] WB_2to1;
-  Mux32Bit2To1 a17(
+  mux3x1 a17(
     .out(WriteData),
     .inA(ReadDataOutofMEMWB),
     .inB(ALUResultOutofMEMWB),
+    .inC(PCResultOutofMEMWB),
     .sel(MemtoRegOutofMEMWB)
   );
 
