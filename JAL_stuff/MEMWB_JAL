@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 
-module MEM_WB(ReadDataIn, ReadDataOut, ALUResultIn, ALUResultOut, MemtoRegIn, MemtoRegOut, RegWriteIn, RegWriteOut, Clk, Reset, WriteRegOut, WriteRegIn,PCResultIn
+module MEM_WB(ReadDataIn, ReadDataOut, ALUResultIn, ALUResultOut, MemtoRegIn, MemtoRegOut, RegWriteIn, RegWriteOut, Clk, Reset, WriteRegOut, WriteRegIn,PCResultIn,
 PCResultOut);
   input Clk;
   input Reset;
@@ -15,7 +15,7 @@ PCResultOut);
 
   output reg [31:0] ALUResultOut;
   output reg [31:0] ReadDataOut;
-  ouput reg [31:0] PCResultOut;
+  output reg [31:0] PCResultOut;
   //Controller Signals Outputs
   output reg MemtoRegOut;
   output reg RegWriteOut;
@@ -33,7 +33,7 @@ PCResultOut);
     MemtoRegOut <= MemtoRegIn;
     RegWriteOut <= RegWriteIn;
     WriteRegOut <= WriteRegIn;
-    PCResultIn <= PCResultOut;
+    PCResultOut <= PCResultIn;
   end
   end
 
