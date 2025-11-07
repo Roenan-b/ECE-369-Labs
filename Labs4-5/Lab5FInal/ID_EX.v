@@ -1,6 +1,9 @@
 `timescale 1ns / 1ps
 
 
+//Percent Effort
+// Roes: 33% Evan: 33% Noah: 33%
+
 module RegisterID_EX(Clk,Reset, ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOut,ALUopOut,RegDstOut,BranchIn,MemWriteIn,MemReadIn,
                      BranchOut,MemWriteOut,MemReadOut,MemtoRegIn,RegWriteIn,MemtoRegOut,RegWriteOut,
                      ReadData1In,ReadData2In,PCAddResultIn,signResultIn,RTRegdestIn,RDRegdestIn,
