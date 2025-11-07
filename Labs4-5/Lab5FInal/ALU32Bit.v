@@ -8,6 +8,10 @@
 //  - Signed comparisons use $signed(...).
 //  - Branches can be driven either the classic way (SUB + Zero) or via the
 //    explicit compare ops that return 1/0 in ALUResult.
+
+//Percent Effort
+// Roes: 33% Evan: 33% Noah: 33%
+
 ////////////////////////////////////////////////////////////////////////////////
 module ALU32Bit (
     input  [5:0]  ALUControl,   // widened to 5 to fit all ops
