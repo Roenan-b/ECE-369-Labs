@@ -1,3 +1,7 @@
+
+//Percent Effort
+// Roes: 33% Evan: 33% Noah: 33%
+
 module Adder(PCAddResult, immSL2, InstructionSig);
 
     input [31:0] immSL2;         
