@@ -1,5 +1,9 @@
 `timescale 1ns / 1ps
 
+
+
+//Percent Effort
+// Roes: 33% Evan: 33% Noah: 33%
 ////////////////////////////////////////////////////////////////////////////////
 // ECE369A - Computer Architecture
 // Laboratory  
