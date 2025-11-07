@@ -1,3 +1,6 @@
+
+//Percent Effort
+// Roes: 33% Evan: 33% Noah: 33%
 module DataMemory(
   input  [31:0] Address,
   input  [31:0] WriteData,
