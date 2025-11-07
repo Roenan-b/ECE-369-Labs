@@ -2,6 +2,9 @@
 
 
 
+//Percent Effort
+// Roes: 33% Evan: 33% Noah: 33%
+
 module RegisterIF_ID(PCAddResult,instructionReadIn,PCAddResultOut,instructionReadOut,Clk, Reset);
 input Clk;
 input Reset;
