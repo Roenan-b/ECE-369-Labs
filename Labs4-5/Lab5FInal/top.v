@@ -1,6 +1,9 @@
-`timescale 1ns / 1ps   // Simulation time unit = 1 ns, time precision = 1 ps
+``timescale 1ns / 1ps
 
 
+
+//Percent Effort
+// Roes: 33% Evan: 33% Noah: 33%
 
 module top (Clk, Reset, out7, en_out);
 input Clk;                    // System clock input (board clock)
