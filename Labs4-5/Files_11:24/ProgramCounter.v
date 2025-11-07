@@ -32,7 +32,7 @@ module ProgramCounter(Address, PCResult, Reset, Clk);
 	output reg [31:0] PCResult;	// 32-bit register output that stores the current PC value
 	
  // Always block triggered on the rising edge of the clock
- always @ (posedge Clk) begin
+	always @ (posedge Clk or posedge Reset) begin
     if (Reset == 1) begin
        PCResult <= 0;           // If Reset is asserted, set PC to 0 (start of instruction memory)
     end
