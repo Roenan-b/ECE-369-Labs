@@ -80,7 +80,7 @@ module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegW
     assign ReadData1 = regs[ReadRegister1];
     assign ReadData2 = regs[ReadRegister2];
 	
-  always @(negedge Clk) begin
+	always @(posedge Clk) begin
     if (RegWrite && (WriteRegister != 5'b00000)) begin 
 			regs[WriteRegister] <= WriteData;
     end
