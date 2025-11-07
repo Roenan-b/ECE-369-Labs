@@ -1,4 +1,9 @@
 `timescale 1ns / 1ps
+
+
+
+//Percent Effort
+// Roes: 33% Evan: 33% Noah: 33%
 module  InstructionFetchUnit(
   output [31:0] Instruction,   // fetched instruction
   output [31:0] PCResult,      // current PC
