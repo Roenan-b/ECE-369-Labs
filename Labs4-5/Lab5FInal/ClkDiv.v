@@ -1,3 +1,7 @@
+
+//Percent Effort
+// Roes: 33% Evan: 33% Noah: 33%
+
 module ClkDiv(Clk, Rst, ClkOut);
    input Clk, Rst;
    output reg ClkOut;
@@ -26,3 +30,4 @@ module ClkDiv(Clk, Rst, ClkOut);
       end
    end
 endmodule
+
