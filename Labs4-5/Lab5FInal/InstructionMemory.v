@@ -4,6 +4,9 @@
 
 //Percent Effort
 // Roes: 33% Evan: 33% Noah: 33%
+
+//Percent Effort
+// Roes: 33% Evan: 33% Noah: 33%
 ////////////////////////////////////////////////////////////////////////////////
 // ECE369A - Computer Architecture
 // Laboratory  1
