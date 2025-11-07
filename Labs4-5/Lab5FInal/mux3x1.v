@@ -1,3 +1,9 @@
+`timescale 1ns / 1ps
+
+
+
+//Percent Effort
+// Roes: 33% Evan: 33% Noah: 33%
 module mux3x1(
   output reg [31:0] out,
   input  [31:0] inA,   // 00: ALU
