@@ -21,6 +21,7 @@ module EX_MEM(
   input  [4:0]  WriteRegIn,
   input  [1:0]  MemSizeIn,
   input         MemUnsignedIn,
+  input  BranchCondIn,     // NEW: branch condition from EX
 
   // data / addresses out
   output reg [31:0] AddResultOut,
@@ -38,8 +39,12 @@ module EX_MEM(
   output reg        RegWriteOut,
   output reg [4:0]  WriteRegOut,
   output reg [1:0]  MemSizeOut,
-  output reg        MemUnsignedOut
+  output reg        MemUnsignedOut,
+  output BranchCondOut     // NEW: pipelined to MEM
+
 );
+
+  reg BranchCond_q;
 
   // Prefer async reset for clean startup like the other pipe regs
   always @(posedge Clk or posedge Reset) begin
@@ -63,6 +68,8 @@ module EX_MEM(
       // memory control defaults: legal & deterministic
       MemSizeOut       <= 2'b10;   // word
       MemUnsignedOut   <= 1'b0;    // signed
+      
+      BranchCond_q     <= 1'b0;
     end else begin
       // data
       AddResultOut     <= AddResultIn;
@@ -83,9 +90,8 @@ module EX_MEM(
       // memory control
       MemSizeOut       <= MemSizeIn;
       MemUnsignedOut   <= MemUnsignedIn;
+      BranchCond_q     <= BranchCondIn;
     end
-    $display("[%0t] EXMEM: MemSizeOut=%b UnsOut=%b",
-         $time, MemSizeOut, MemUnsignedOut);
-
-  end
+   end
+    assign BranchCondOut = BranchCond_q;
 endmodule
