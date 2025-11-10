@@ -1,12 +1,8 @@
 `timescale 1ns / 1ps
 
 
-
-//Percent Effort
-// Roes: 33% Evan: 33% Noah: 33%
-
 module MEM_WB(ReadDataIn, ReadDataOut, ALUResultIn, ALUResultOut, MemtoRegIn, MemtoRegOut, RegWriteIn, RegWriteOut, Clk, Reset, WriteRegOut, WriteRegIn,PCResultIn,
-PCResultOut);
+PCResultOut, BranchTakenIn, BranchTakenOut);
   input Clk;
   input Reset;
   input [31:0] ALUResultIn;
@@ -16,6 +12,7 @@ PCResultOut);
   input [1:0] MemtoRegIn;
   input RegWriteIn;
   input[4:0] WriteRegIn;
+  input BranchTakenIn;
 
   output reg [31:0] ALUResultOut;
   output reg [31:0] ReadDataOut;
@@ -24,6 +21,9 @@ PCResultOut);
   output reg [1:0] MemtoRegOut;
   output reg RegWriteOut;
   output reg [4:0] WriteRegOut;
+  output BranchTakenOut;
+  
+  reg BranchTaken_q;
   
   always @(posedge Clk) begin
     if(Reset) begin
@@ -31,6 +31,7 @@ PCResultOut);
         ReadDataOut <= 32'b0;
         MemtoRegOut <= 2'b00;
         RegWriteOut <= 1'b0;
+        BranchTaken_q <= 1'b0;
      end else begin
     ALUResultOut <= ALUResultIn;
     ReadDataOut <= ReadDataIn;
@@ -38,8 +39,10 @@ PCResultOut);
     RegWriteOut <= RegWriteIn;
     WriteRegOut <= WriteRegIn;
     PCResultOut <= PCResultIn;
+    BranchTaken_q <= BranchTakenIn;
   end
   end
+  assign BranchTakenOut = BranchTaken_q;
 
 endmodule
   
