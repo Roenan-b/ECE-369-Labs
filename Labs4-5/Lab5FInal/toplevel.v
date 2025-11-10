@@ -243,6 +243,18 @@ end
     .ALUResult(ALUResult),
     .Zero(ZeroIn)
   );
+  
+  // EX: detect compare-style ops from ALU control
+wire is_cmp_EX = (ALUopOutofIDEX == 6'd10) || // CMPEQ
+                 (ALUopOutofIDEX == 6'd11) || // CMPNE
+                 (ALUopOutofIDEX == 6'd12) || // CMPGT0
+                 (ALUopOutofIDEX == 6'd13) || // CMPGE0
+                 (ALUopOutofIDEX == 6'd14) || // CMPLT0
+                 (ALUopOutofIDEX == 6'd15);   // CMPLE0
+
+// EX: branch condition (1 = take)
+wire BranchCond_EX = is_cmp_EX ? ALUResult[0] : ZeroIn;
+
 
   // =========================
   // EX/MEM
@@ -294,7 +306,9 @@ end
     .MemSizeIn     (MemSizeOutofIDEX),
     .MemUnsignedIn (MemUnsignedOutofIDEX),
     .MemSizeOut    (MemSizeOutofEXMEM),
-    .MemUnsignedOut(MemUnsignedOutofEXMEM)
+    .MemUnsignedOut(MemUnsignedOutofEXMEM),
+    .BranchCondIn (BranchCond_EX),
+    .BranchCondOut(BranchCondOutofEXMEM)
 
   );
 
@@ -303,21 +317,30 @@ end
   // Data Memory
   // =========================
   wire [31:0] ReadData;
+  wire MemWrite_safe = MemWriteOutofEXMEM & ~PCSrc;
 
   DataMemory a10(
     .Address  (ALUResultOutofEXMEM),
     .WriteData(ReadData2OutofEXMEM),
     .Clk(Clk),
-    .MemWrite (MemWriteOutofEXMEM),
+    .MemWrite (MemWrite_safe),
     .MemRead  (MemReadOutofEXMEM),
     .MemSize  (MemSizeOutofEXMEM),
     .MemUnsigned(MemUnsignedOutofEXMEM),
     .ReadData (ReadData)
   );
 
-  // Branch decision (EX/MEM stage)
-  wire PCSrc;
-  and a18(PCSrc, BranchOutofEXMEM, ZeroOut);
+// ---------------------------
+// Branch decision logic (MEM stage)
+// ---------------------------
+// (BranchCondOutofEXMEM comes from EX_MEM.v via BranchCond_q)
+
+wire PCSrc = BranchOutofEXMEM && BranchCondOutofEXMEM;
+
+// Select PC target or PC+4 based on branch decision
+wire [31:0] PCBranchOrSeq = PCSrc ? BranchTargetOutofEXMEM : IF_PCPlus4;
+
+
 
   // =========================
   // MEM/WB
@@ -335,14 +358,17 @@ end
     .ReadDataIn (ReadData),              .ReadDataOut (ReadDataOutofMEMWB),
     .ALUResultIn(ALUResultOutofEXMEM),   .ALUResultOut(ALUResultOutofMEMWB),
     .MemtoRegIn (WBSourceOutofEXMEM),    .MemtoRegOut (WBSourceOutofMEMWB),
-    .RegWriteIn (RegWriteOutofEXMEM),    .RegWriteOut (RegWriteOutofMEMWB),
+    .RegWriteIn (RegWriteOutofEXMEM & ~PCSrc),    .RegWriteOut (RegWriteOutofMEMWB),
     .PCResultIn(PCResultOutofEXMEM), .PCResultOut(PCResultOutofMEMWB),
     .Clk(Clk),
     .Reset(Reset),
 
     // *** New 5-bit write-reg pipe (add these two ports in MEM_WB module)a
     .WriteRegIn (WriteReg_EXMEM),
-    .WriteRegOut(WriteReg_MEMWB)
+    .WriteRegOut(WriteReg_MEMWB),
+    
+    .BranchTakenIn (PCSrc),
+    .BranchTakenOut(BranchTakenOutofMEMWB)
   );
 
 
@@ -368,8 +394,7 @@ mux3x1 wb_mux3(
 wire [31:0] JumpTarget;
 assign JumpTarget = {PCAddResultOutofIFID[31:28], instructionReadOut[25:0], 2'b00};
 
-// Branch-or-sequential selection (your old 2:1 mux)
-wire [31:0] PCBranchOrSeq = PCSrc ? PCAddResultOutofEXMEM : IF_PCPlus4;
+
 
 // Final PC priority: JR > J > Branch > Sequential
   assign PCNext = JumpReg ? ReadData1In : (Jump ? JumpTarget : PCBranchOrSeq);
@@ -377,9 +402,15 @@ wire [31:0] PCBranchOrSeq = PCSrc ? PCAddResultOutofEXMEM : IF_PCPlus4;
   
 
   // Final external outputs (as in your original)
-  assign instructionWrite = IF_Instruction;   // show current fetched instruction
-  assign WB_RegWrite      = RegWriteOutofMEMWB;
-  assign WB_WriteReg      = WriteRegister_wb_sel;
-  assign WB_WriteData     = WriteData;
+  wire do_wb = RegWriteOutofMEMWB && ~MemWriteOutofEXMEM && ~PCSrc;
+  
+  //assign instructionWrite = IF_Instruction;   // show current fetched instruction
+  //assign WB_RegWrite      = RegWriteOutofMEMWB;
+  //assign WB_WriteReg  = WriteRegister_wb_sel;
+  //assign WB_WriteData = BranchTakenOutofMEMWB ? 32'd0 : WriteData;
+  assign WB_WriteData = do_wb ? WriteData : 32'd0;
+  //assign WB_WriteReg  = do_wb ? WriteRegister_wb_sel : 5'd0;
+  //assign WB_RegWrite  = RegWriteOutofMEMWB; // keep real control for the RF
+
 
 endmodule
