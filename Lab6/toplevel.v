@@ -126,6 +126,13 @@ module toplevel(
     .ReadData2(ReadData2In)
   );
 
+  wire EqualSignal;
+  EqualGate a20(
+    .inputA(ReadData1In),
+    .inputB(ReadData2In),
+    .outSignal(EqualSignal)
+  )
+
   // =========================
   // ID/EX pipeline register
   // =========================
