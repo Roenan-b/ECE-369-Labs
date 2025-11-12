@@ -230,11 +230,13 @@ end
 
   wire [31:0] ALU_A_input;
   assign ALU_A_input = UseShamtOutofIDEX ? {27'b0, shamtOutofIDEX} : ReadData1OutofIDEX;
-  immSL2 a12(.in(signResultOutofIDEX), .out(immSL2_out));
+
+  //shift left 2 unit (changed this for lab 6)
+  immSL2 a12(.in(immFinal), .out(immSL2_out));
 
   // Branch target = PC+4 (ID/EX) + (imm << 2)
   wire [31:0] BranchTargetIn_EX;
-  Adder a8(.PCAddResult(PCAddResultOutofIDEX), .immSL2(immSL2_out), .InstructionSig(BranchTargetIn_EX));
+  Adder a8(.PCAddResult(PCAddResultOutofIFID), .immSL2(immSL2_out), .InstructionSig(BranchTargetIn_EX));   // changed PCAddResultOutofIDEX to PCAddResultOutofIFID
 
   ALU32Bit a11(
     .ALUControl(ALUopOutofIDEX),     // 6-bit path intact
@@ -337,8 +339,9 @@ wire BranchCond_EX = is_cmp_EX ? ALUResult[0] : ZeroIn;
 
 wire PCSrc = BranchOutofEXMEM && BranchCondOutofEXMEM;
 
-// Select PC target or PC+4 based on branch decision
-wire [31:0] PCBranchOrSeq = PCSrc ? BranchTargetOutofEXMEM : IF_PCPlus4;
+// Select PC target or PC+4 based on branch decision MUX FOR PC+4 VS JUMP TARGET
+  
+  wire [31:0] PCBranchOrSeq = PCSrc ? BranchTargetIn_EX : IF_PCPlus4;  // IN LAB 6: changed BranchTargetOutofEXMEM  to  BranchTargetIn_EX
 
 
 
