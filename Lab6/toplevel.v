@@ -264,7 +264,17 @@ wire is_cmp_EX = (ALUopOutofIDEX == 6'd10) || // CMPEQ
 // EX: branch condition (1 = take)
 wire BranchCond_EX = is_cmp_EX ? ALUResult[0] : ZeroIn;
 
-
+  FowardingUnit b5(
+    .id_ex_rs(),
+    .id_ex_rt(RTRegdestOutofIDEX) //correct
+    .ex_mem_reg_write(RegWriteOutofEXMEM), //correct
+    .ex_mem_rd(WriteReg_EXMEM), //correct
+    .mem_wb_reg_write(RegWriteOutofMEMWB), //correct
+    .mem_wb_rd(WriteReg_MEMWB),  //correct
+    .foward_a(),
+    .foward_b()
+  );
+  
   // =========================
   // EX/MEM
   // =========================
