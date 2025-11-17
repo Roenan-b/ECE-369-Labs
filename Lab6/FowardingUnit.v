@@ -20,7 +20,7 @@ module ForwardingUnit(
         if ((ex_mem_reg_write) && (ex_mem_rd != 0) && (ex_mem_rd == id_ex_rs)) begin
             forward_a <= 2'b10;
         end
-        // ex_mem to ALU rs input
+        // ex_mem to ALU rt input
         if ((ex_mem_reg_write) && (ex_mem_rd != 0) && (ex_mem_rd == id_ex_rt)) begin
             forward_b <= 2'b10;
         end
