@@ -11,7 +11,7 @@ module EqualGate (inputA, inputB, outSignal);
 
   always @(*)  begin
   if (inputA == inputB) outSignal <= 1;
-  else outsignal <=0;
+  else outSignal <=0;
 
   end
 endmodule
