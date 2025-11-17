@@ -154,6 +154,7 @@ module toplevel(
   wire [1:0] MemSizeOutofEXMEM;
   wire       MemUnsignedOutofEXMEM;
   wire [1:0] RegDstSelOutofIDEX;
+  wire [4:0] RSOutofIDEX;
 
 
   RegisterID_EX a14(
@@ -198,7 +199,9 @@ module toplevel(
     .MemSizeIn     (MemSize),
     .MemUnsignedIn (MemUnsigned),
     .MemSizeOut    (MemSizeOutofIDEX),
-    .MemUnsignedOut(MemUnsignedOutofIDEX)
+    .MemUnsignedOut(MemUnsignedOutofIDEX),
+    .rs_in(rs), 
+    .rs_out(RSOutofIDEX)
   );
 
   // =========================
