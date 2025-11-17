@@ -8,7 +8,7 @@ module RegisterID_EX(Clk,Reset, ALUSrcIn,ALUopIn,RegDstIn,ALUSrcOut,ALUopOut,Reg
                      BranchOut,MemWriteOut,MemReadOut,MemtoRegIn,RegWriteIn,MemtoRegOut,RegWriteOut,
                      ReadData1In,ReadData2In,PCAddResultIn,signResultIn,RTRegdestIn,RDRegdestIn,
                      ReadData1Out,ReadData2Out,PCAddResultOut,signResultOut,RTRegdestOut,
-                     RDRegdestOut, UseShamtOut,UseShamtIn, shamtIn, shamtOut, RegDstSelIn,RegDstSelOut, MemSizeIn, MemUnsignedIn, MemSizeOut, MemUnsignedOut);
+                     RDRegdestOut, UseShamtOut,UseShamtIn, shamtIn, shamtOut, RegDstSelIn,RegDstSelOut, MemSizeIn, MemUnsignedIn, MemSizeOut, MemUnsignedOut, rs_in, rs_out);
 
 input Clk;
 input Reset;
@@ -69,6 +69,9 @@ output reg MemReadOut;
     input      [1:0] RegDstSelIn;
     output reg [1:0] RegDstSelOut;
 
+  input [4:0] rs_in;
+  output reg [4:0] rs_out;
+
 
   //Register Logic
   always @(posedge Clk) begin
@@ -86,6 +89,7 @@ output reg MemReadOut;
     RegDstSelOut <= 2'b00;
     MemSizeOut <= 2'b10;
     MemUnsignedOut <= 1'b0;
+    rs_out <= 5'b00000;
   end else begin
   
     //EX
@@ -115,9 +119,8 @@ output reg MemReadOut;
     
     MemSizeOut <= MemSizeIn;
     MemUnsignedOut <= MemUnsignedIn;
-    
-    $display("[%0t] IDEX : MemSizeOut=%b UnsOut=%b",
-         $time, MemSizeOut, MemUnsignedOut);
+
+    rs_out <= rs_in;
 
 
     end
