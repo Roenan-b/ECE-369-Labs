@@ -60,6 +60,7 @@ module HazardDetectionUnit
     // Basic dependency helpers
     // -----------------------------
     wire dep_exmem_rs = ex_mem_RegWrite && (ex_mem_Rd != 0) && (ex_mem_Rd == if_id_Rs);
+    // dep_exmem_rs is true if ex_memRegWrite = 1, ex_mem_Rd is not equal to zero, and ex_mem_Rd is equal to if_id_Rs
     wire dep_exmem_rt = ex_mem_RegWrite && (ex_mem_Rd != 0) && (ex_mem_Rd == if_id_Rt);
 
     wire dep_memwb_rs = mem_wb_RegWrite && (mem_wb_Rd != 0) && (mem_wb_Rd == if_id_Rs);
