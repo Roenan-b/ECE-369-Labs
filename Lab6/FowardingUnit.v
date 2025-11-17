@@ -1,33 +1,40 @@
-module ForwardingUnit
-#(parameter REGW = 5)
-(
-    input  wire        ex_mem_RegWrite,
-    input  wire [REGW-1:0] ex_mem_Rd,
-    input  wire        mem_wb_RegWrite,
-    input  wire [REGW-1:0] mem_wb_Rd,
-    input  wire [REGW-1:0] id_ex_Rs,
-    input  wire [REGW-1:0] id_ex_Rt,
-    output reg  [1:0]  ForwardA, // 00: ID/EX, 10: EX/MEM, 01: MEM/WB
-    output reg  [1:0]  ForwardB
+`timescale 1ns/1ps
+
+module ForwardingUnit(
+    input clk,
+    input [4:0] id_ex_rs,
+    input [4:0] id_ex_rt,
+    input ex_mem_reg_write,
+    input [4:0] ex_mem_rd,
+    input mem_wb_reg_write,
+    input [4:0] mem_wb_rd,
+    output reg [1:0] forward_a,
+    output reg [1:0] forward_b
 );
     always @(*) begin
-        // defaults
-        ForwardA = 2'b00;
-        ForwardB = 2'b00;
 
-        // EX hazard
-        if (ex_mem_RegWrite && (ex_mem_Rd != 0) && (ex_mem_Rd == id_ex_Rs))
-            ForwardA = 2'b10;
-        if (ex_mem_RegWrite && (ex_mem_Rd != 0) && (ex_mem_Rd == id_ex_Rt))
-            ForwardB = 2'b10;
+        forward_a <= 2'b00;
+        forward_b <= 2'b00;
 
-        // MEM hazard (lower priority)
-        if (mem_wb_RegWrite && (mem_wb_Rd != 0) &&
-            (mem_wb_Rd == id_ex_Rs) && (ForwardA == 2'b00))
-            ForwardA = 2'b01;
-
-        if (mem_wb_RegWrite && (mem_wb_Rd != 0) &&
-            (mem_wb_Rd == id_ex_Rt) && (ForwardB == 2'b00))
-            ForwardB = 2'b01;
+        // ex_mem to ALU rs input
+        if ((ex_mem_reg_write) && (ex_mem_rd != 0) && (ex_mem_rd == id_ex_rs)) begin
+            forward_a <= 2'b10;
+        end
+        // ex_mem to ALU rs input
+        if ((ex_mem_reg_write) && (ex_mem_rd != 0) && (ex_mem_rd == id_ex_rt)) begin
+            forward_b <= 2'b10;
+        end
+        // mem_wb to ALU rs input
+        if ((mem_wb_reg_write) && (mem_wb_rd != 0)
+            &&  !((ex_mem_reg_write) && (ex_mem_rd != 0) && (ex_mem_rd == id_ex_rs))
+            && (mem_wb_rd == id_ex_rs)) begin
+            forward_a <= 2'b01;
+        end
+        // mem_wb to ALU rt input
+        if ((mem_wb_reg_write) && (mem_wb_rd != 0)
+            &&  !((ex_mem_reg_write) && (ex_mem_rd != 0) && (ex_mem_rd == id_ex_rt))
+            && (mem_wb_rd == id_ex_rt)) begin
+            forward_b <= 2'b01;
+        end
     end
 endmodule
