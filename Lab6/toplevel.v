@@ -131,7 +131,7 @@ module toplevel(
     .inputA(ReadData1In),
     .inputB(ReadData2In),
     .outSignal(EqualSignal)
-  )
+  );
 
   // =========================
   // ID/EX pipeline register
