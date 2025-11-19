@@ -29,7 +29,7 @@ module ControllerMux(
   input [1:0] inMemSize,
   input inMemUnsigned;,
 
-  output reg outALUSRC,
+  output reg outALUSrc,
   output reg [1:0] outRegDstSel,
   output reg [5:0] outALUControl,
   output reg outMemRead,
@@ -51,7 +51,7 @@ module ControllerMux(
     begin
        if (sel == 1) begin
 
- outALUSRC <=inALUSRC;
+ outALUSrc <=inALUSrc;
  outRegDstSel <=inRegDstSel;
  outALUControl <=inALUControl;
  outMemRead <=inMemRead;
@@ -69,7 +69,7 @@ module ControllerMux(
 
        end
     else begin
- outALUSRC <=0;
+ outALUSrc <=0;
  outRegDstSel <=0;
  outALUControl <=0;
  outMemRead <=0;
