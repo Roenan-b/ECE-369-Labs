@@ -146,7 +146,7 @@ module toplevel(
   wire [31:0] signExtImm, zeroExtImm, immFinal;
   SignExtension a3(.in(imm16), .out(signExtImm));
   assign zeroExtImm = {16'b0, imm16};
-  assign immFinal = ExtZero ? zeroExtImm : signExtImm;
+  assign immFinal = ExtZero2 ? zeroExtImm : signExtImm;
 
   // Writeback wires (defined later)
   wire [31:0] WriteData;
@@ -198,20 +198,20 @@ module toplevel(
     .Clk(Clk),
     .Reset(Reset),
     // control in/out
-    .ALUSrcIn    (ALUSrcIn),
-    .ALUopIn     (OPCodeIn),        // 6-bit path
+    .ALUSrcIn    (ALUSrcIn2),
+    .ALUopIn     (OPCodeIn2),        // 6-bit path
     .RegDstIn    (RegDst1bit),      // mapped from 2-bit RegDstSel_bus
     .ALUSrcOut   (ALUSrcOutofIDEX),
     .ALUopOut    (ALUopOutofIDEX),  // 6-bit
     .RegDstOut   (RegDstOutofIDEX),
-    .BranchIn    (BranchIn),
-    .MemWriteIn  (MemWriteIn),
-    .MemReadIn   (MemReadIn),
+    .BranchIn    (BranchIn2),
+    .MemWriteIn  (MemWriteIn2),
+    .MemReadIn   (MemReadIn2),
     .BranchOut   (BranchOutofIDEX),
     .MemWriteOut (MemWriteOutofIDEX),
     .MemReadOut  (MemReadOutofIDEX),
-    .MemtoRegIn  (WBSource_bus),
-    .RegWriteIn  (RegWriteIn),
+    .MemtoRegIn  (WBSource_bus2),
+    .RegWriteIn  (RegWriteIn2),
     .MemtoRegOut (WBSourceOutofIDEX),
     .RegWriteOut (RegWriteOutofIDEX),
     // data in/out
@@ -227,14 +227,14 @@ module toplevel(
     .signResultOut(signResultOutofIDEX),
     .RTRegdestOut(RTRegdestOutofIDEX),
     .RDRegdestOut(RDRegdestOutofIDEX),
-    .UseShamtIn(UseShamt),
+    .UseShamtIn(UseShamt2),
     .UseShamtOut(UseShamtOutofIDEX),
     .shamtIn(shamt),
     .shamtOut(shamtOutofIDEX),
-    .RegDstSelIn (RegDstSel_bus),         // from controller (ID)
+    .RegDstSelIn (RegDstSel_bus2),         // from controller (ID)
     .RegDstSelOut(RegDstSelOutofIDEX),
-    .MemSizeIn     (MemSize),
-    .MemUnsignedIn (MemUnsigned),
+    .MemSizeIn     (MemSize2),
+    .MemUnsignedIn (MemUnsigned2),
     .MemSizeOut    (MemSizeOutofIDEX),
     .MemUnsignedOut(MemUnsignedOutofIDEX),
     .rs_in(rs), 
@@ -457,7 +457,7 @@ assign JumpTarget = {PCAddResultOutofIFID[31:28], instructionReadOut[25:0], 2'b0
 
 
 // Final PC priority: JR > J > Branch > Sequential
-  assign PCNext = JumpReg ? ReadData1In : (Jump ? JumpTarget : PCBranchOrSeq);
+  assign PCNext = JumpReg2 ? ReadData1In : (Jump2 ? JumpTarget : PCBranchOrSeq);
 
   
 
