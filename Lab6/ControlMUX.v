@@ -49,11 +49,26 @@ module ControllerMux(
     
     always @(*)
     begin
-    if (sel == 1)
+       if (sel == 1) begin
+
+ outALUSRC <=inALUSRC;
+ outRegDstSel <=inRegDstSel;
+ outALUControl <=inALUControl;
+ outMemRead <=inMemRead;
+ outMemWrite <=inMemWrite;
+ outWBSource <=inWBSource;
+ outRegWrite <=inRegWrite;
+ outBranch<=inBranch;
+ outJump<=inJump;
+ outJumpReg <=inJumpReg;
+ outExtZero <=inExtZero;
+ outUseShamt<=inUseShamt;
+ outMemSize<=inMemSize;
+ outMemUnsigned<=inMemUnsigned;
 
 
-  
-    else
+       end
+    else begin
  outALUSRC <=0;
  outRegDstSel <=0;
  outALUControl <=0;
@@ -67,7 +82,8 @@ module ControllerMux(
  outExtZero <=0;
  outUseShamt<=0;
  outMemSize<=0;
- outMemUnisgned<=0
+ outMemUnisgned<=0;
+    end
     end
 
 endmodule
