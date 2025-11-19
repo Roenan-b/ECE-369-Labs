@@ -268,16 +268,26 @@ always @* begin
 end
 
   // B-input mux to ALU: sel=1 -> immediate (signResultOutofIDEX), sel=0 -> ReadData2
+  
+  //Fowarding Muxes
+  Mux32Bit2To1 c1(mux2Out,WriteData,ReadData2OutofIDEX,fowardB); //bottom one
+  Mux32Bit2To1 c2(mux1Out,WriteData,ReadData1OutofIDEX,fowardA); //top one
+  
   Mux32Bit2To1 mux_alu_b(
     .out (BottomALUInput),
-    .inA (ReadData2OutofIDEX),
+    .inA (mux2Out),  //was ReadData2OutofIDEX changed to mux1Out for fowarding
     .inB (signResultOutofIDEX),
     .sel (ALUSrcOutofIDEX)
   );
 
+  //////////////////////////////////////////////////////////////
+  //
   wire [31:0] ALU_A_input;
-  assign ALU_A_input = UseShamtOutofIDEX ? {27'b0, shamtOutofIDEX} : ReadData1OutofIDEX;
+  assign ALU_A_input = UseShamtOutofIDEX ? {27'b0, shamtOutofIDEX} : mux1Out;
+  //check THIS!!!!
 
+  ////////////////////////////////////////////////////////////////////////////
+  
   //shift left 2 unit (changed this for lab 6)
   immSL2 a12(.in(immFinal), .out(immSL2_out));
 
@@ -311,8 +321,8 @@ wire BranchCond_EX = is_cmp_EX ? ALUResult[0] : ZeroIn;
     .ex_mem_rd(WriteReg_EXMEM), //correct
     .mem_wb_reg_write(RegWriteOutofMEMWB), //correct
     .mem_wb_rd(WriteReg_MEMWB),  //correct
-    .foward_a(),
-    .foward_b()
+    .foward_a(fowardA),
+    .foward_b(fowardB)
   );
   
   // =========================
@@ -344,7 +354,7 @@ wire BranchCond_EX = is_cmp_EX ? ALUResult[0] : ZeroIn;
     .MuxIn(RegDstOutofIDEX ? {27'b0, RDRegdestOutofIDEX} : {27'b0, RTRegdestOutofIDEX}),
     .MuxOut(MuxOutofEXMEM),
 
-    .ReadData2In(ReadData2OutofIDEX), .ReadData2Out(ReadData2OutofEXMEM),
+    .ReadData2In(mux2Out), .ReadData2Out(ReadData2OutofEXMEM),
 
     .ZeroIn(ZeroIn), .ZeroOut(ZeroOut),
 
