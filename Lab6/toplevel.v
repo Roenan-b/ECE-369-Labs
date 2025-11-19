@@ -86,6 +86,7 @@ module toplevel(
   // (JAL's $31 is not handled in this 2:1 path; fine for now)
   wire RegDst1bit = (RegDstSel_bus == 2'b01); // 0=rt, 1=rd
   wire ExtZero;
+  
 
   controller a2(
     .instruction(instructionReadOut),
@@ -106,37 +107,40 @@ module toplevel(
     .ExtZero(ExtZero) 
   );
 
+  wire        ALUSrcIn2, RegDstSel_bus2, MemReadIn2, MemWriteIn2, RegWriteIn2, MemSize2, MemUnsigned2;
+  wire        BranchIn2, Jump2, JumpReg2, UseShamt2, OPCodeIn2, WBSource_bus2, ExtZero2;
+
   
   ControllerMux c3(
     .sel(),
-    .inALUSRC(),
-    .inRegDstSel(),
-    .inALUControl(),
-    .inMemRead(),
-    .inWBSource(),
-    .inRegWrite(),
-    .inBranch(),
-    .inJump(),
-    .inJumpReg(),
-    .inExtZero(),
-    .inUseShamt(),
-    .inMemSize(),
-    .inMemUnisgned(),
+    .inALUSRC(ALUSrcIn),
+    .inRegDstSel(RegDstSel_bus),
+    .inALUControl(OPCodeIn),
+    .inMemRead(MemReadIn),
+    .inWBSource(WBSource_bus),
+    .inRegWrite(RegWriteIn),
+    .inBranch(BranchIn),
+    .inJump(Jump),
+    .inJumpReg(JumpReg),
+    .inExtZero(ExtZero),
+    .inUseShamt(UserShamt),
+    .inMemSize(MemSize),
+    .inMemUnisgned(MemUnsigned),
 
-    .outALUSrc
-    .outRegDstSel(),
-    .outALUControl(),
-    .outMemRead(),
-    .outMemWrite(),
-    .outWBSource(),
-    .outRegWrite(),
-    .outBranch(),
-    .outJump(),
-    .outJumpReg(),
-    .outExtZero(),
-    .outUseShamt(),
-    .outMemSize(),
-    .outMemUnsigned()
+    .outALUSrc(ALUSrcIn2)
+    .outRegDstSel(RegDstSel_bus2),
+    .outALUControl(OPCodeIn2),
+    .outMemRead(MemReadIn2),
+    .outMemWrite(MemWriteIn2),
+    .outWBSource(WBSource_bus2),
+    .outRegWrite(RegWriteIn2),
+    .outBranch(BranchIn2),
+    .outJump(Jump2),
+    .outJumpReg(JumpReg2),
+    .outExtZero(ExtZero2),
+    .outUseShamt(UseShamt2),
+    .outMemSize(MemSize2),
+    .outMemUnsigned(MemUnsigned2)
   ).
   
   wire [31:0] signExtImm, zeroExtImm, immFinal;
