@@ -1,0 +1,36 @@
+`timescale 1ns / 1ps
+
+//Percent Effort
+// Roes: 33% Evan: 33% Noah: 33%
+module InstructionFetchUnit(
+  output [31:0] Instruction,   // fetched instruction
+  output [31:0] PCResult,      // current PC
+  output [31:0] PCPlus4,       // convenient PC+4 for IF/ID
+  input  [31:0] PCNext,        // next PC chosen at top (branch/jump/seq)
+  input         Reset,
+  input         Clk,
+  input         PCWrite        // NEW: gate PC updates (from HazardDetection)
+);
+
+  // PC register loads PCNext only when PCWrite == 1
+  ProgramCounter pc_reg(
+    .Address (PCNext),
+    .PCResult(PCResult),
+    .Reset   (Reset),
+    .Clk     (Clk),
+    .PCWrite (PCWrite)   // NEW
+  );
+
+  // PC + 4 for sequential path
+  PCAdder pc_adder(
+    .PCResult   (PCResult),
+    .PCAddResult(PCPlus4)
+  );
+
+  // Instruction memory addressed by current PC
+  InstructionMemory imem(
+    .Address    (PCResult),
+    .Instruction(Instruction)
+  );
+  
+endmodule
