@@ -105,6 +105,39 @@ module toplevel(
     .MemUnsigned(MemUnsigned),   
     .ExtZero(ExtZero) 
   );
+
+  
+  ControllerMux c3(
+    .sel(),
+    .inALUSRC(),
+    .inRegDstSel(),
+    .inALUControl(),
+    .inMemRead(),
+    .inWBSource(),
+    .inRegWrite(),
+    .inBranch(),
+    .inJump(),
+    .inJumpReg(),
+    .inExtZero(),
+    .inUseShamt(),
+    .inMemSize(),
+    .inMemUnisgned(),
+
+    .outALUSrc
+    .outRegDstSel(),
+    .outALUControl(),
+    .outMemRead(),
+    .outMemWrite(),
+    .outWBSource(),
+    .outRegWrite(),
+    .outBranch(),
+    .outJump(),
+    .outJumpReg(),
+    .outExtZero(),
+    .outUseShamt(),
+    .outMemSize(),
+    .outMemUnsigned()
+  ).
   
   wire [31:0] signExtImm, zeroExtImm, immFinal;
   SignExtension a3(.in(imm16), .out(signExtImm));
