@@ -21,7 +21,7 @@ wire [15:0]NumberA;           // Lower 16 bits of Instruction to display on one 
 wire [15:0]NumberB;           // Lower 16 bits of PCResult to display on the other 4-digit pair
   
 // Clock divider: takes board Clk and an (unused) reset input '1'b0', produces slower ClkOut for the IFU/display
-//ClkDiv a1(Clk, 1'b0, ClkOut);
+ClkDiv a1(Clk, 1'b0, ClkOut);
 //toplevel a2(ClkOut, Reset, PC, WriteData);
 
 //toplevel a2(Clk, Reset, PC, WriteData);
