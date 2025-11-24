@@ -29,7 +29,7 @@ ClkDiv a1(Clk, 1'b0, ClkOut);
 
 // Instruction Fetch Unit: on Reset and rising edges of ClkOut, updates PCResult and fetches Instruction
 toplevel a2(
-    .Clk   (Clk),
+ .Clk   (ClkOut),
     .Reset (Reset),
     .PC_out(PC),
     .WB_WriteData(WriteData)
