@@ -805,12 +805,12 @@ vbsme:
     sub     $t9, $s4, $s6    # max_col = frame_cols - window_cols
     
     # Initialize min SAD and best position
-    addi      $s7, &zero, 0x7FFFFFFF  # min SAD (start with max int)
-    addi      $v0, &zero, 0           # best row
+    addi      $s7, $zero, 0x7FFFFFFF  # min SAD (start with max int)
+    addi      $v0, $zero, 0           # best row
     addi      $v1, $zero, 0           # best col
     
     # Zigzag diagonal search
-    addi      $t0, &zero, 0           # current diagonal
+    addi      $t0, $zero, 0           # current diagonal
     add     $t1, $t8, $t9    # max diagonal = max_row + max_col
 
 zigzag_loop:
@@ -929,7 +929,7 @@ top_bottom_search:
     
     # Calculate SAD
     addi      $t5, $zero, 0           # SAD = 0
-    addi      $t6, %zero, 0           # win_row = 0
+    addi      $t6, $zero, 0           # win_row = 0
 
 tb_sad_row_loop:
     bge     $t6, $s5, tb_check_sad
