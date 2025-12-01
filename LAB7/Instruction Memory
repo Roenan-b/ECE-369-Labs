@@ -85,7 +85,7 @@ afb7001c	//				sw	$s7, 28($sp) ->				sw	$s7, 28($sp)
 03194820	//				add	$t1, $t8, $t9 ->				add	$t1, $t8, $t9
 41090056	//	zigzag_loop:		bgt	$t0, $t1, done ->	zigzag_loop:		bgt	$t0, $t1, done
 310a0001	//				andi	$t2, $t0, 1 ->				andi	$t2, $t0, 1
-00000000	//				nop ->				nop
+11400001	//				beq	$t2, $zero, bottom_to_top ->				beq	$t2, $zero, bottom_to_top
 08000082	//				j	top_to_bottom ->				j	top_to_bottom
 210a0000	//	bottom_to_top:		addi	$t2, $t0, 0 ->	bottom_to_top:		addi	$t2, $t0, 0
 0540004e	//	bottom_top_search:	bltz	$t2, zigzag_next ->	bottom_top_search:	bltz	$t2, zigzag_next
