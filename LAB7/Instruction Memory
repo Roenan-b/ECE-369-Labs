@@ -58,7 +58,7 @@ afbf0000	//				sw	$ra, 0($sp) ->				sw	$ra, 0($sp)
 0c00003e	//				jal	vbsme ->				jal	vbsme
 8fbf0000	//				lw	$ra, 0($sp) ->				lw	$ra, 0($sp)
 23bd0004	//				addi	$sp, $sp, 4 ->				addi	$sp, $sp, 4
-00000000	//				nop ->				nop
+0800003d	//				j	end_program ->				j	end_program
 0800003d	//	end_program:		j	end_program ->	end_program:		j	end_program
 23bdffe0	//	vbsme:			addi	$sp, $sp, -32 ->	vbsme:			addi	$sp, $sp, -32
 afb00000	//				sw	$s0, 0($sp) ->				sw	$s0, 0($sp)
