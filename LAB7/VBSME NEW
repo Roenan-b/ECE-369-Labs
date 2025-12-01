@@ -665,7 +665,7 @@ main:
     lw      $ra, 0($sp)         # Restore return address
     addi    $sp, $sp, 4         # Restore stack pointer
     #jr      $ra                 # Return
-    j endprogram
+    j end_program
 end_program:                    # remain in infinite loop
 	j end_program
 
