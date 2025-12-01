@@ -1,6 +1,6 @@
 #  Fall 2025
-#  Team Members:    
-#  % Effort    :   
+#  Team Members:   Evan Harris, Noah Monroe, Roenan Bingle 
+#  % Effort    :       33%           33%          33%
 #
 # ECE369A,  
 # 
@@ -389,7 +389,7 @@ end_program:                    # remain in infinite loop
 
 # Begin subroutine
 vbsme:  
-        # Save registers
+      # Save registers
     addi    $sp, $sp, -32
     sw      $s0, 0($sp)
     sw      $s1, 4($sp)
@@ -429,7 +429,7 @@ zigzag_loop:
     
     # Check parity for zigzag direction - SWAPPED
     andi    $t2, $t0, 1      # 0 = even, 1 = odd
-    beqz    $t2, bottom_to_top   # EVEN: search bottom to top (right first)
+    beq    $t2, $zero, bottom_to_top   # EVEN: search bottom to top (right first)
     j       top_to_bottom        # ODD: search top to bottom (down first)
 
 bottom_to_top:
