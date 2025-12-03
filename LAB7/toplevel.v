@@ -10,11 +10,11 @@ module toplevel(
   output [31:0] PC_out,
   //output WB_RegWrite,
   //output [4:0] WB_WriteReg,
-  output [31:0] WB_WriteData
+ output [31:0] WB_WriteData,
   //output [6:0] out7,
   //output [7:0] en_out
-  output [31:0] v0Out;
-  output [31:0] v1Out;
+ output [31:0] v0Out,
+  output [31:0] v1Out
 );
   // =========================
   // IF stage via IFU
