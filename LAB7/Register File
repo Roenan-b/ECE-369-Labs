@@ -32,7 +32,7 @@
 // OUTPUTS:-
 // ReadData1: 32-Bit registered output. 
 // ReadData2: 32-Bit registered output. 
-//
+// 
 // FUNCTIONALITY:-
 // 'ReadRegister1' and 'ReadRegister2' are two 5-bit addresses to read two 
 // registers simultaneously. The two 32-bit data sets are available on ports 
@@ -55,7 +55,7 @@
 // to allow for data multiplexing and setup time.
 ////////////////////////////////////////////////////////////////////////////////
 
-module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegWrite, Clk, ReadData1, ReadData2, Readv0, Read,v1);
+module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegWrite, Clk, ReadData1, ReadData2, Readv0, Readv1);
   input [4:0] ReadRegister1;
   input [4:0] ReadRegister2;
   input [4:0] WriteRegister;
@@ -65,8 +65,10 @@ module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegW
 	
   output [31:0] ReadData1;
   output [31:0] ReadData2;
+
   output [31:0] Readv0;
-  output [31:0] Readv1
+  output [31:0] Readv1;
+
 
 	//Check this one, kinda confused
 	reg [31:0] regs [0:31];
@@ -78,18 +80,23 @@ module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegW
         regs[i] = 32'b0;
     end
     
-    assign ReadData1 = regs[ReadRegister1];
-    assign ReadData2 = regs[ReadRegister2];
+    assign ReadData1 = (RegWrite && (WriteRegister != 5'd0) &&
+                    (WriteRegister == ReadRegister1))
+                   ? WriteData
+                   : regs[ReadRegister1];
+
+assign ReadData2 = (RegWrite && (WriteRegister != 5'd0) &&
+                    (WriteRegister == ReadRegister2))
+                   ? WriteData
+                   : regs[ReadRegister2];
 	
 	always @(posedge Clk) begin
     if (RegWrite && (WriteRegister != 5'b00000)) begin 
 			regs[WriteRegister] <= WriteData;
-	
     end
-    assign Readv0 = regs[2];
-    assign Readv1 = regs[3];
 
   end 
-	
+  assign Readv0 = regs[2];
+  assign Readv1 = regs[3];
 
 endmodule
