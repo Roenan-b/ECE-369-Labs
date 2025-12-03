@@ -55,7 +55,7 @@
 // to allow for data multiplexing and setup time.
 ////////////////////////////////////////////////////////////////////////////////
 
-module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegWrite, Clk, ReadData1, ReadData2);
+module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegWrite, Clk, ReadData1, ReadData2, Readv0, Read,v1);
   input [4:0] ReadRegister1;
   input [4:0] ReadRegister2;
   input [4:0] WriteRegister;
@@ -65,7 +65,8 @@ module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegW
 	
   output [31:0] ReadData1;
   output [31:0] ReadData2;
-
+  output [31:0] Readv0;
+  output [31:0] Readv1
 
 	//Check this one, kinda confused
 	reg [31:0] regs [0:31];
@@ -83,9 +84,12 @@ module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegW
 	always @(posedge Clk) begin
     if (RegWrite && (WriteRegister != 5'b00000)) begin 
 			regs[WriteRegister] <= WriteData;
+	
     end
+    assign Readv0 = regs[2];
+    assign Readv1 = regs[3];
 
   end 
-	/* Please fill in the implementation here... */
+	
 
 endmodule
