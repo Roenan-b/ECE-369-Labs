@@ -11,13 +11,17 @@ module toplevel_tb;
     // Outputs
     wire [31:0] PC_out;
     wire [31:0] WB_WriteData;
+    wire [31:0] v0;
+    wire [31:0] v1;
 
     // DUT
     toplevel uut (
         .Clk       (Clk),
         .Reset     (Reset),
         .PC_out    (PC_out),
-        .WB_WriteData(WB_WriteData)
+        .WB_WriteData(WB_WriteData),
+        .Readv0(v0),
+        .Readv1(v1)
     );
 
     // Clock: 10 ns period
