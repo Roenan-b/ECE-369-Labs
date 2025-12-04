@@ -389,6 +389,8 @@ end_program:                    # remain in infinite loop
 
 # Begin subroutine
 vbsme:  
+    addi      $v0, $zero, 0              # reset $v0 and $V1
+    addi      $v1, $zero, 0
       # Save registers
     addi    $sp, $sp, -32
     sw      $s0, 0($sp)
