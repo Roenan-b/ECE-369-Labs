@@ -433,11 +433,26 @@ vbsme:
 
 zigzag_loop:
     bgt     $t0, $t1, done
+	nop
+	nop
+	nop
+	nop
+	nop
     
     # Check parity for zigzag direction - SWAPPED
     andi    $t2, $t0, 1      # 0 = even, 1 = odd
     beq    $t2, $zero, bottom_to_top   # EVEN: search bottom to top (right first)
+	nop
+	nop
+	nop
+	nop
+	nop
     j       top_to_bottom        # ODD: search top to bottom (down first)
+	nop
+	nop
+	nop
+	nop
+	nop
 
 bottom_to_top:
     # Search diagonal from bottom to top: (d,0), (d-1,1), (d-2,2), ...
@@ -445,9 +460,24 @@ bottom_to_top:
     
 bottom_top_search:
     bltz    $t2, zigzag_next         # if row < 0
+	nop
+	nop
+	nop
+	nop
+	nop
     bgt     $t2, $t8, bottom_top_adjust
+	nop
+	nop
+	nop
+	nop
+	nop
     
     j       bottom_top_continue
+	nop
+	nop
+	nop
+	nop
+	nop
     
 bottom_top_adjust:
     addi    $t2, $t8, 0         # clamp to max_row
@@ -457,7 +487,17 @@ bottom_top_continue:
     sub     $t3, $t0, $t2
     
     bltz    $t3, bottom_top_next      # if col < 0
+	nop
+	nop
+	nop
+	nop
+	nop
     bgt     $t3, $t9, bottom_top_next # if col > max_col
+	nop
+	nop
+	nop
+	nop
+	nop
     
     # VALID POSITION (t2, t3) - Calculate SAD
     # Calculate frame starting address
@@ -472,6 +512,11 @@ bottom_top_continue:
 
 bt_sad_row_loop:
     bge     $t6, $s5, bt_check_sad
+	nop
+	nop
+	nop
+	nop
+	nop
     
     # Calculate window row address
     mul     $a1, $t6, $s6    # win_row * window_cols
@@ -487,6 +532,11 @@ bt_sad_row_loop:
 
 bt_sad_col_loop:
     bge     $t7, $s6, bt_sad_row_done
+	nop
+	nop
+	nop
+	nop
+	nop
     
     # Load frame and window pixels
     lw      $a2, 0($a0)      # frame pixel
@@ -495,6 +545,11 @@ bt_sad_col_loop:
     # Calculate absolute difference
     sub     $a2, $a2, $a3
     bgez    $a2, bt_abs_done
+	nop
+	nop
+	nop
+	nop
+	nop
     sub     $a2, $zero, $a2  # absolute value
 bt_abs_done:
     
@@ -514,6 +569,11 @@ bt_sad_row_done:
 bt_check_sad:
     # Update if SAD <= current min (to get last best position)
     bgt     $t5, $s7, bottom_top_next
+	nop
+	nop
+	nop
+	nop
+	nop
     
     # Update minimum SAD and best position
     addi    $s7, $t5, 0
@@ -523,6 +583,11 @@ bt_check_sad:
 bottom_top_next:
     addi    $t2, $t2, -1     # move up to next row
     j       bottom_top_search
+	nop
+	nop
+	nop
+	nop
+	nop
 
 top_to_bottom:
     # Search diagonal from top to bottom: (0,d), (1,d-1), (2,d-2), ...
@@ -530,13 +595,33 @@ top_to_bottom:
     
 top_bottom_search:
     bgt     $t2, $t0, zigzag_next    # if row > diagonal
+	nop
+	nop
+	nop
+	nop
+	nop
     bgt     $t2, $t8, zigzag_next    # if row > max_row
+	nop
+	nop
+	nop
+	nop
+	nop
     
     # col = diagonal - row
     sub     $t3, $t0, $t2
     
     bltz    $t3, top_bottom_next      # if col < 0
+	nop
+	nop
+	nop
+	nop
+	nop
     bgt     $t3, $t9, top_bottom_next # if col > max_col
+	nop
+	nop
+	nop
+	nop
+	nop
     
     # VALID POSITION (t2, t3) - Calculate SAD
     # Calculate frame starting address
@@ -551,6 +636,11 @@ top_bottom_search:
 
 tb_sad_row_loop:
     bge     $t6, $s5, tb_check_sad
+	nop
+	nop
+	nop
+	nop
+	nop
     
     # Calculate window row address
     mul     $a1, $t6, $s6    # win_row * window_cols
@@ -566,6 +656,11 @@ tb_sad_row_loop:
 
 tb_sad_col_loop:
     bge     $t7, $s6, tb_sad_row_done
+	nop
+	nop
+	nop
+	nop
+	nop
     
     # Load frame and window pixels
     lw      $a2, 0($a0)      # frame pixel
@@ -574,6 +669,11 @@ tb_sad_col_loop:
     # Calculate absolute difference
     sub     $a2, $a2, $a3
     bgez    $a2, tb_abs_done
+	nop
+	nop
+	nop
+	nop
+	nop
     sub     $a2, $zero, $a2  # absolute value
 tb_abs_done:
     
@@ -585,14 +685,29 @@ tb_abs_done:
     addi    $a1, $a1, 4
     addi    $t7, $t7, 1
     j       tb_sad_col_loop
+	nop
+	nop
+	nop
+	nop
+	nop
 
 tb_sad_row_done:
     addi    $t6, $t6, 1
     j       tb_sad_row_loop
+	nop
+	nop
+	nop
+	nop
+	nop
 
 tb_check_sad:
     # Update if SAD <= current min (to get last best position)
     bgt     $t5, $s7, top_bottom_next
+	nop
+	nop
+	nop
+	nop
+	nop
     
     # Update minimum SAD and best position
     addi    $s7, $t5, 0
@@ -602,10 +717,20 @@ tb_check_sad:
 top_bottom_next:
     addi    $t2, $t2, 1      # move down to next row
     j       top_bottom_search
+	nop
+	nop
+	nop
+	nop
+	nop
 
 zigzag_next:
     addi    $t0, $t0, 1      # next diagonal
     j       zigzag_loop
+	nop
+	nop
+	nop
+	nop
+	nop
 
 done:
     # Restore registers
