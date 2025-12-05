@@ -77,7 +77,7 @@ afb7001c	//				sw	$s7, 28($sp) ->				sw	$s7, 28($sp)
 00000000
 00000000
 00000000
-0800004f	//				j	top_to_bottom ->				j	top_to_bottom
+080000b0	//				j	top_to_bottom ->				j	top_to_bottom
 00000000
 00000000
 00000000
