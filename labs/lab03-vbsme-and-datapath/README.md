@@ -19,4 +19,4 @@ make unit LAB=lab03
 
 `ALU32Bit_tb` is self-checking and reports pass/fail per operation. The other testbenches are stimulus-only.
 
-`tools/mipshelper` (MipsHelper369) assembles MIPS source into instruction and data memory contents for the Verilog memories.
+The assembly was converted into instruction and data memory images with the course's MipsHelper369 assembler, which is not redistributed in this repository.

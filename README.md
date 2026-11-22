@@ -1,17 +1,30 @@
 # ECE 369A: Pipelined MIPS Processor in Verilog
 
-A five-stage pipelined processor for a MIPS32 instruction subset, written in Verilog and brought up on a Xilinx FPGA through a sequence of labs. The final design includes hazard detection, data forwarding, byte/halfword memory access, and enough of the ISA to run a motion-estimation kernel (VBSME) written in MIPS assembly.
+A five-stage pipelined MIPS processor designed in Verilog, built up over six labs from a single instruction-fetch unit to a processor with data forwarding, load-use hazard detection, and pipeline flushing. The final design runs a variable block size motion estimation (VBSME) kernel, hand-written in MIPS assembly, and shows the result on an FPGA board's seven-segment displays.
 
 Coursework for ECE 369A Computer Organization, University of Arizona, Fall 2025.
 
+## Highlights
+
+- **Five-stage pipeline** (IF, ID, EX, MEM, WB) with four pipeline registers, written as separate, individually testable modules.
+- **Data forwarding** from the EX/MEM and MEM/WB stages into both ALU operands, with EX/MEM priority and `$zero` excluded.
+- **Load-use hazard detection** that stalls the PC and IF/ID register and injects a bubble. The Lab 7 version only compares `rt` when the instruction in ID actually reads it, which removes unnecessary stalls.
+- **Control hazard handling**: jumps and `jr` resolve in ID and flush one instruction; taken branches flush IF/ID and ID/EX.
+- **30 instructions**, including byte and halfword loads and stores with signed and unsigned variants, six branch conditions, and `jal`/`jr` for procedure calls.
+- **VBSME kernel in MIPS assembly**: a sum-of-absolute-differences search for the best match of a 4x4 to 16x16 window in frames up to 64x64, returning the match position in `$v0` and `$v1`.
+- **FPGA bring-up** with a clock divider and a multiplexed eight-digit seven-segment driver, using Xilinx Vivado constraints.
+- **Reproducible command-line builds**: a Makefile elaborates every lab with Icarus Verilog and runs its testbenches.
+
 ## Contents
 
+- [Highlights](#highlights)
 - [Repository layout](#repository-layout)
 - [Processor architecture](#processor-architecture)
 - [Supported instructions](#supported-instructions)
 - [Labs](#labs)
 - [Getting started](#getting-started)
 - [FPGA build with Vivado](#fpga-build-with-vivado)
+- [Verification](#verification)
 - [Known issues](#known-issues)
 - [Authors](#authors)
 
@@ -27,8 +40,6 @@ Coursework for ECE 369A Computer Organization, University of Arizona, Fall 2025.
 │   ├── lab06-hazard-detection-forwarding/
 │   └── lab07-vbsme-on-pipeline/
 ├── archive/                                Earlier drafts and snapshots, kept for history
-├── docs/course-materials/                  Course handouts and slides
-├── tools/mipshelper/                       Course-provided MIPS assembler (MipsHelper)
 ├── scripts/                                Simulation helpers used by the Makefile
 └── Makefile                                Icarus Verilog build and simulation targets
 ```
@@ -113,7 +124,6 @@ VBSME (variable block size motion estimation) slides a window (4x4 up to 16x16 p
 - [Icarus Verilog](https://steveicarus.github.io/iverilog/) (tested with 12.0), for command-line simulation
 - GNU Make
 - Xilinx Vivado, for synthesis and programming the board
-- Java runtime, only if you use the MipsHelper assembler in `tools/mipshelper`
 
 ### Simulate
 
@@ -133,6 +143,10 @@ make sim LAB=lab04 SIM_TIME_NS=200000
 
 Several modules print a trace with `$display` (instruction fetch, loads, stores, decode), so expect verbose output.
 
+### Assembling programs
+
+The `mem/` images were produced from the `asm/` sources with MipsHelper369, the assembler provided by the course. It is not redistributed here. `labs/lab07-vbsme-on-pipeline/scripts/memory_init_to_hex.regex.txt` converts its `memory[i] = ...` output into the plain hex format that `$readmemh` reads.
+
 ## FPGA build with Vivado
 
 1. Create an RTL project and add every file in the lab's `rtl/` directory (for Lab 7, add the Lab 6 `rtl/` files first, then the Lab 7 files, replacing the Lab 6 copies with the same name).
@@ -141,6 +155,19 @@ Several modules print a trace with `$display` (instruction fetch, loads, stores,
 4. Run synthesis and implementation, generate the bitstream, and program the board.
 
 The constraint file defines a 100 MHz clock on pin E3, a reset input, and eight multiplexed seven-segment digits; these pin assignments are consistent with the Digilent Nexys A7 board. `ClkDiv` slows the processor clock so execution is visible on the display.
+
+## Verification
+
+Checked with Icarus Verilog 12.0 using the Makefile:
+
+| Check | Result |
+| ----- | ------ |
+| `make check`: Lab 4, 5, 6, and 7 processor cores | All elaborate |
+| `make check`: Lab 1 and Lab 3 unit testbenches | All elaborate |
+| `make unit LAB=lab03`: `ALU32Bit_tb` (self-checking) | All operations pass |
+| `make sim LAB=lab04` | Runs the program image; loads and stores appear in the trace |
+
+The other unit testbenches apply stimulus without checking results. Vivado synthesis and on-board behavior have not been re-checked from this repository.
 
 ## Known issues
 
@@ -158,5 +185,3 @@ Team project by:
 - **Roenan Bingle** ([@Roenan-b](https://github.com/Roenan-b))
 - **Evan Harris** ([@eharris2](https://github.com/eharris2))
 - **Noah Monroe** ([@nmonroe04](https://github.com/nmonroe04))
-
-Course materials in `docs/course-materials/` and the MipsHelper tool in `tools/mipshelper/` were provided by the course and remain the property of their authors.
