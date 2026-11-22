@@ -17,4 +17,3 @@ Files keep their original names (with spaces removed and file extensions added) 
 | `lab06/snapshot-*` | Lab 6 working-set snapshots, by date |
 | `lab06/post-lab-2025-11-24/` | `toplevel.v` between the Lab 6 and Lab 7 versions |
 | `lab07/memory-image-drafts/` | Earlier instruction and data memory images for Lab 7, including annotated and `memory[i] = ...` initializer forms |
-| `reference/prior-offering/` | Reference material from a previous offering of the course (not this team's work) |
