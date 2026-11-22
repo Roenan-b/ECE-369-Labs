@@ -1,0 +1,37 @@
+# Local simulation output (Makefile)
+build/
+*.vvp
+*.vcd
+*.fst
+*.lxt
+*.lxt2
+
+# Vivado project and run artifacts
+*.xpr
+*.cache/
+*.hw/
+*.ip_user_files/
+*.runs/
+*.sim/
+*.gen/
+*.srcs/
+.Xil/
+xsim.dir/
+*.jou
+*.log
+*.str
+*.pb
+*.wdb
+*.backup.*
+vivado_pid*.zip
+webtalk*
+usage_statistics_webtalk.*
+hs_err_pid*.log
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~
